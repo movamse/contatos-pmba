@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contatos - Polícia Militar da Bahia</title>
+    <!-- Carregando Tailwind CSS para estilização rápida e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carregando Font Awesome para os ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Configurando tema customizado do Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'pmba-navy': '#002855', // Azul marinho escuro
+                        'pmba-blue': '#004B87', // Azul médio
+                        'pmba-light': '#E6F0FA', // Azul bem claro para fundos
+                        'pmba-gold': '#D4AF37', // Dourado para detalhes
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Fundo cinza bem claro */
+        }
+
+        /* Suaviza as transições de hover */
+        .transition-all {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 300ms;
+        }
+
+        /* Estilo para a barra de rolagem dos cards se necessário */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-pmba-navy text-white shadow-md border-b-4 border-pmba-gold sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center">
+            <div class="flex items-center mb-4 sm:mb-0">
+                <!-- Ícone placeholder representando a PMBA -->
+                <div class="bg-white text-pmba-navy rounded-full p-2 mr-3 shadow-sm border border-pmba-gold">
+                    <i class="fa-solid fa-shield-halved text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-bold tracking-wide uppercase">Polícia Militar da Bahia</h1>
+                    <p class="text-pmba-gold text-xs sm:text-sm font-semibold tracking-wider">Diretório de Contatos das Unidades</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <a href="https://www.instagram.com/pmdabahia/" class="text-gray-300 hover:text-white transition-colors"><i class="fa-brands fa-instagram text-xl"></i></a>
+                <a href="https://www.youtube.com/@PMdaBahia" class="text-gray-300 hover:text-white transition-colors"><i class="fa-brands fa-youtube text-xl"></i></a>
+                <a href="https://www.pm.ba.gov.br/" class="text-gray-300 hover:text-white transition-colors"><i class="fa-solid fa-globe"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Search Section -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-200">
+            <h2 class="text-lg font-semibold text-pmba-navy mb-4"><i class="fa-solid fa-magnifying-glass mr-2"></i>Buscar Unidade ou Contato</h2>
+            
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fa-solid fa-search text-gray-400"></i>
+                </div>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pmba-blue focus:border-pmba-blue focus:bg-white transition duration-150 ease-in-out sm:text-sm" 
+                    placeholder="Digite o nome da unidade, comando, telefone ou setor..."
+                >
+            </div>
+            <div class="mt-3 flex flex-wrap gap-2 text-sm text-gray-500">
+                <span class="font-medium text-gray-700">Filtros rápidos:</span>
+                <button onclick="filterByType('Comando')" class="px-3 py-1 bg-gray-100 hover:bg-pmba-light hover:text-pmba-blue rounded-full transition-colors border border-gray-200">Comandos</button>
+                <button onclick="filterByType('Batalhão')" class="px-3 py-1 bg-gray-100 hover:bg-pmba-light hover:text-pmba-blue rounded-full transition-colors border border-gray-200">Batalhões</button>
+                <button onclick="filterByType('Companhia')" class="px-3 py-1 bg-gray-100 hover:bg-pmba-light hover:text-pmba-blue rounded-full transition-colors border border-gray-200">Companhias</button>
+                <button onclick="filterByType('Especializad')" class="px-3 py-1 bg-gray-100 hover:bg-pmba-light hover:text-pmba-blue rounded-full transition-colors border border-gray-200">Especializadas</button>
+                <button onclick="filterByType('Ensino')" class="px-3 py-1 bg-gray-100 hover:bg-pmba-light hover:text-pmba-blue rounded-full transition-colors border border-gray-200">Ensino/Colégios</button>
+                <button onclick="resetFilters()" class="px-3 py-1 bg-pmba-light text-pmba-navy font-medium rounded-full transition-colors border border-pmba-blue hover:bg-pmba-blue hover:text-white">Mostrar Todos</button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800 border-l-4 border-pmba-gold pl-2">Unidades Encontradas</h3>
+                <span id="resultCount" class="text-sm font-medium bg-pmba-navy text-white px-3 py-1 rounded-full shadow-sm">Carregando...</span>
+            </div>
+            
+            <!-- Mensagem quando não houver resultados -->
+            <div id="noResults" class="hidden text-center py-12 bg-white rounded-xl shadow-sm border border-gray-200">
+                <i class="fa-solid fa-folder-open text-4xl text-gray-300 mb-3"></i>
+                <h3 class="text-lg font-medium text-gray-900">Nenhum contato encontrado</h3>
+                <p class="text-gray-500 mt-1">Tente ajustar os termos da sua pesquisa.</p>
+                <button onclick="resetFilters()" class="mt-4 px-4 py-2 bg-pmba-blue text-white rounded-md hover:bg-pmba-navy transition-colors">Limpar Busca</button>
+            </div>
+
+            <!-- Grid de Cards -->
+            <div id="contactsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Os cards serão injetados aqui via JavaScript -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-8 border-t-4 border-pmba-navy mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-sm flex items-center justify-center sm:justify-start">
+                    <i class="fa-solid fa-shield-halved mr-2 text-pmba-gold"></i> PMBA
+                </h4>
+                <p class="text-sm">Polícia Militar da Bahia<br>Sempre perto, sempre pronta.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-sm">Links Úteis</h4>
+                <ul class="text-sm space-y-2">
+                    <li><a href="#" class="hover:text-white transition-colors">Site Oficial</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Ouvidoria Geral</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Portal do Servidor</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4 uppercase tracking-wider text-sm">Emergência</h4>
+                <div class="flex items-center justify-center sm:justify-start space-x-3">
+                    <div class="bg-red-600 text-white rounded-full h-12 w-12 flex items-center justify-center text-xl font-bold shadow-lg">190</div>
+                    <span class="text-sm font-medium">Ligue em caso de<br>urgência ou emergência.</span>
+                </div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-4 border-t border-gray-700 text-center text-xs text-gray-500">
+            <p>&copy; 2026 MOVAM-SE. Aplicação não oficial, criada para fins de consulta dos principais contatos da PMBA</p>
+        </div>
+    </footer>
+
+    <!-- Lógica da Aplicação -->
+    <script>
+        const contactsData = [
+            { nome: "COMANDO GERAL", tipo: "Comando", comandante: "CEL PM ANTONIO CARLOS SILVA MAGALHÃES", endereco: "Largo dos Aflitos, S/N, Centro, Salvador-Ba. CEP: 40020-850", telefone: "(71) 3117-6039", email: "cg.cmt@pm.ba.gov.br", setor: "Alto Comando", icone: "fa-star" },
+            { nome: "SUBCOMANDO GERAL", tipo: "Comando", comandante: "CEL PM ANTONIO DO NASCIMENTO LOPES", endereco: "Largo dos Aflitos, S/N, Centro, Salvador-BA. CEP: 40020-850", telefone: "(71) 3117-6108", email: "scg.scmt@pm.ba.gov.br", setor: "Alto Comando", icone: "fa-star-half-stroke" },
+            { nome: "COMANDO DE OPERAÇÕES POLICIAIS MILITARES", tipo: "Comando", comandante: "CEL PM PAULO SÉRGIO SIMÕES RIBEIRO", endereco: "Largo dos Aflitos, S/N, Centro, Salvador-Ba. CEP: 40020-850", telefone: "(71) 3116-8937", email: "coppm.cmd@pm.ba.gov.br", setor: "Operacional", icone: "fa-shield-halved" },
+            { nome: "COMANDO DE INTELIGÊNCIA – COINT", tipo: "Comando", comandante: "CEL PM MAURO DE SOUZA ARAUJO", endereco: "Rua Clínio de Jesus, 411-A, Barbalho, CEP 40301-200, Salvador/BA.", telefone: "(71) 99987-2276", email: "mauro.souza@pm.ba.gov.br", setor: "Estratégico", icone: "fa-eye" },
+            { nome: "OUVIDORIA", tipo: "Órgão Central", comandante: "Ouvidor-Chefe CEL PM JOSÉ LUÍS SANTOS SILVA", endereco: "Av. Sete de Setembro, 281, Largo dos Aflitos, Passeio Público, Salvador/BA, CEP 40060-008.", telefone: "(71) 99651-5960", email: "joseluis@pm.ba.gov.br", setor: "Administrativo", icone: "fa-ear-listen" },
+            { nome: "CORREGEDORIA", tipo: "Órgão Central", comandante: "Corregedor-Chefe CEL PM DELMO BARBOSA DE SANTANA", endereco: "R. Amazonas, 13 - Pituba, Salvador - BA, 41830-380", telefone: "(71) 99647-9359", email: "Não informado", setor: "Justiça e Disciplina", icone: "fa-scale-balanced" },
+            { nome: "DEPARTAMENTO DE SAÚDE", tipo: "Departamento", comandante: "Diretor CEL QOSPM SAMUEL ARTUR CARDOSO DE SOUZA", endereco: "R. Augusto de Mendonça, S/N - Bonfim, Salvador - BA, 40415-010", telefone: "(71) 3116-6297", email: "ds.diretor@pm.ba.gov.br", setor: "Saúde", icone: "fa-truck-medical" },
+            { nome: "IEP – INSTITUTO DE ENSINO E PESQUISA", tipo: "Ensino", comandante: "Diretor CEL PM CARLOS HENRIQUE FERREIRA MELO", endereco: "Rua Augusto de Mendonça, s/n, Bonfim, Salvador - BA", telefone: "(71) 3116-6331", email: "iep.diretor@pm.ba.gov.br", setor: "Ensino", icone: "fa-book" },
+            { nome: "CFAP – CENTRO DE FORMAÇÃO E APERFEIÇOAMENTO DE PRAÇAS", tipo: "Ensino", comandante: "Diretor CEL PM JOSÉ ANDRADE DE SOUZA JÚNIOR", endereco: "R. do Côrte Grande, 921 - Rio Vermelho, Salvador - BA, 41950-260", telefone: "(71) 99965-7500", email: "cfap.dir@pm.ba.gov.br", setor: "Ensino", icone: "fa-graduation-cap" },
+            { nome: "CASA MILITAR DO GOVERNADOR", tipo: "Assistência Militar", comandante: "Chefe Cel PM Adalberto Oliveira Píton da Silva", endereco: "Av. Luís Viana Filho, 3ª Avenida, 390 - CAB, Salvador - BA", telefone: "(71) 3115-6511 / 3115-6527", email: "cmg.gab@cmg.ba.gov.br", setor: "Geral", icone: "fa-building-user" },
+            { nome: "TRIBUNAL DE CONTAS DO ESTADO DA BAHIA", tipo: "Assistência Militar", comandante: "Assistente Militar Cel PM Anildo Rocha Batista", endereco: "4ª Avenida CAB, 495 - Salvador - BA, 41745-002", telefone: "(71) 3118-1122", email: "Não informado", setor: "Geral", icone: "fa-building-user" },
+            { nome: "TRIBUNAL DE CONTAS DO MUNICÍPIO", tipo: "Assistência Militar", comandante: "Assistente Militar CEL PM MANOEL XAVIER DE SOUZA FILHO", endereco: "Av. 4, nº.495 - 3º andar, CAB Salvador-BA, CEP 41.745-002", telefone: "Não informado", email: "Não informado", setor: "Geral", icone: "fa-building-user" },
+            
+            { nome: "COMANDO DO POLICIAMENTO REGIONAL DA CAPITAL – ATLÂNTICO", tipo: "Comando Regional", comandante: "CEL PM GABRIEL MANUEL DA SILVA NETO", endereco: "Rua Oswaldo Valente, 631 - Itaigara, Salvador - BA", telefone: "(71) 99983-4937", email: "cprca.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-map" },
+            { nome: "COMANDO DO POLICIAMENTO REGIONAL DA CAPITAL – BAÍA DE TODOS OS SANTOS", tipo: "Comando Regional", comandante: "CEL PM ELSIMAR DE OLIVEIRA LEÃO", endereco: "R. Aterro do Joanes, 149 - Lobato, Salvador - BA", telefone: "(71) 3117-6399", email: "cprbts.sirh@pm.ba.gov.br", setor: "Capital", icone: "fa-map" },
+            { nome: "COMANDO DO POLICIAMENTO REGIONAL DA CAPITAL – CENTRAL", tipo: "Comando Regional", comandante: "CEL PM ROBERTO DE MELO ASSUNÇÃO", endereco: "5ª Avenida do Centro Administrativo da Bahia, Salvador - BA", telefone: "(71) 3115-9307", email: "cprcc.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-map" },
+            { nome: "COMANDO DO POLICIAMENTO DA REGIÃO METROPOLITANA DE SALVADOR", tipo: "Comando Regional", comandante: "CEL PM PAULO JOSÉ CAMPOS GUERRA", endereco: "Jardim do Jockey, Lauro de Freitas - BA", telefone: "(71) 99985-5182", email: "cprms.cmd@pm.ba.gov.br", setor: "RMS", icone: "fa-map" },
+            { nome: "COMANDO DO POLICIAMENTO DA REGIÃO LESTE", tipo: "Comando Regional", comandante: "CEL PM MICHEL ALEXANDER GUIMARÃES MÜLLER DE AZEVEDO", endereco: "Av. Frei Félix de Pacaúba, s/n°, Campo Limpo, Feira de Santana - BA", telefone: "(75) 99931-7583", email: "muller@pm.ba.gov.br", setor: "Interior", icone: "fa-map" },
+            { nome: "COMANDO DO POLICIAMENTO DA REGIÃO SUL", tipo: "Comando Regional", comandante: "CEL PM SANDRO CRISPIM FERREIRA LOPES", endereco: "Av. Ferroviária, 315 - Iguape, Ilhéus - BA, 45658-340", telefone: "(73) 99944-8494", email: "cprs.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map" },
+            { nome: "COMANDO DO POLICIAMENTO DA REGIÃO NORTE", tipo: "Comando Regional", comandante: "CEL PM WILDON TEIXEIRA DOS REIS", endereco: "Trav. Deocleciano Rabelo de Araújo, s/nº, Santo Antônio", telefone: "(74) 3614-1620", email: "cprn.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map" },
+            { nome: "COMANDO DO POLICIAMENTO DA REGIÃO OESTE", tipo: "Comando Regional", comandante: "CEL PM JOSÉ CARLOS SOARES MARIANO", endereco: "R. Barão de Cotegipe, 1001 - Vila Regina, Barreiras - BA", telefone: "(77) 99933-3768", email: "cpro.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map" },
+            { nome: "COMANDO DO POLICIAMENTO DA REGIÃO MEIO OESTE", tipo: "Comando Regional", comandante: "CEL PM CLEBER SANTOS DA SILVA", endereco: "Av. Afonso Fraga, 200, Lagoa Grande - Bom Jesus da Lapa - BA", telefone: "(77) 99982-2696", email: "cprmo.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map" },
+            { nome: "COMANDO DO POLICIAMENTO DA REGIÃO NORDESTE", tipo: "Comando Regional", comandante: "CEL PM DANIEL GOMES FIGUEIREDO", endereco: "R. dos Guararapes, 147 - Gen. Dutra, Paulo Afonso - BA", telefone: "(75) 98108-1771", email: "cprne.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map" },
+            { nome: "COMANDO DE POLICIAMENTO DA REGIÃO SUDOESTE", tipo: "Comando Regional", comandante: "CEL PM PAULO HENRIQUE ROCHA GUIMARÃES", endereco: "Av. Paraná, 2001 - Kadija, Vitória da Conquista - BA", telefone: "(77) 3427-2133", email: "cprso.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map" },
+            { nome: "COMANDO DO POLICIAMENTO DA REGIÃO DA CHAPADA", tipo: "Comando Regional", comandante: "CEL PM MARCELO QUEIROZ DE SOUZA PINTO", endereco: "Av. Rio Branco, Itaberaba - BA", telefone: "(75) 3251-6353", email: "cprch.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map" },
+            { nome: "COMANDO DO POLICIAMENTO DA REGIÃO DO RECÔNCAVO", tipo: "Comando Regional", comandante: "CEL PM JOÃO MAURÍCIO BOTELHO DE QUEIROZ", endereco: "Rua Alagoas, nº 403, Santa Rita, Santo Antônio de Jesus/BA", telefone: "(75) 99976-6637", email: "Mauricio.botelho@pm.ba.gov.br", setor: "Interior", icone: "fa-map" },
+            { nome: "COMANDO DO POLICIAMENTO DA REGIÃO DO EXTREMO SUL", tipo: "Comando Regional", comandante: "CEL PM LUÍS ALBERTO BAQUEIRO PARAÍSO BORGES", endereco: "Rua Coronel Fonseca, 34, Mirante do Rio, Teixeira de Freitas - BA", telefone: "(73) 98183-1912", email: "luis.paraiso@pm.ba.gov.br", setor: "Interior", icone: "fa-map" },
+            { nome: "COMANDO DE POLICIAMENTO ESPECIALIZADO", tipo: "Comando Especializado", comandante: "CEL PM RICARDO CÉSAR SANTANA LIMA", endereco: "Rua dos Rádios Amadores s/n - Pituaçu, Salvador - BA", telefone: "(71) 3117-8537", email: "santana@pm.ba.gov.br", setor: "Especializada", icone: "fa-shield" },
+            { nome: "COMANDO DE POLICIAMENTO EM MISSÕES ESPECIAIS", tipo: "Comando Especializado", comandante: "CEL PM ARTHUR MASCARENHAS FERNANDES", endereco: "Rua dos Radioamadores, km 01, S/N, Pituaçú, Salvador - BA", telefone: "(71) 3116-8989", email: "cpme.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-meteor" },
+            { nome: "COMANDO DE POLICIAMENTO DE APOIO OPERACIONAL – CPAP", tipo: "Comando Especializado", comandante: "CEL PM Ricardo Passos Conceição", endereco: "Rua Ilhéus, 47 - Rio vermelho, Salvador/BA", telefone: "Não informado", email: "cpap.cmd@pm.ba.gov.br", setor: "Operacional", icone: "fa-building-shield" },
+            { nome: "COMANDO ESPECIALIZADO DE POLICIAMENTO RODOVIÁRIO – CEPRv", tipo: "Comando Especializado", comandante: "CEL PM LUCAS MIGUEZ PALMA", endereco: "BA 528, Km 01, 1 - Pq. Rodoviário DERBA, Salvador - BA", telefone: "(71) 9963-2290", email: "ceprv.cmd@pm.ba.gov.br", setor: "Rodoviário", icone: "fa-road" },
+            { nome: "COMANDO DE POLICIAMENTO DA REGIÃO DO LITORAL NORTE", tipo: "Comando Regional", comandante: "CEL PM ANTONIO BATISTA DE MACEDO JÚNIOR", endereco: "Av. Cel. Filadéfio Neves, 42 - Juracy Magalhaes, Alagoinhas - BA", telefone: "Não informado", email: "cprln.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map" },
+            { nome: "COMANDO DE POLICIAMENTO DA REGIÃO DO CENTRO NORTE", tipo: "Comando Regional", comandante: "CEL PM ROBERTO SANTANA DE ARAÚJO", endereco: "Não informado", telefone: "Não informado", email: "roberto.santana@pm.ba.gov.br", setor: "Interior", icone: "fa-map" },
+            { nome: "COMANDO DE POLICIAMENTO DA REGIÃO DO MÉDIO RIO DE CONTAS", tipo: "Comando Regional", comandante: "CEL PM WAGNER LUIZ ALVES FERREIRA", endereco: "484, Av. Ulisses Coelho, 262 - Km-3, Jequié - BA", telefone: "Não informado", email: "wagner@pm.ba.gov.br", setor: "Interior", icone: "fa-map" },
+
+            { nome: "AUDITORIA DA JUSTIÇA MILITAR ESTADUAL", tipo: "Justiça e Disciplina", comandante: "Juiz Auditor PAULO ROBERTO SANTOS DE OLIVEIRA", endereco: "Av. Salvador, 41 - Bonfim, Salvador - BA, 40415-110", telefone: "(71) 3207-1234", email: "Não informado", setor: "Justiça", icone: "fa-gavel" },
+            { nome: "PROMOTORIA DA JUSTIÇA MILITAR ESTADUAL", tipo: "Justiça e Disciplina", comandante: "Promotor Dr. MARCELO GUEDES; DRA. MONIA LOPES", endereco: "Av. Joana Angélica, 1312 - Nazaré, Salvador - BA", telefone: "(71) 3103-6490", email: "Não informado", setor: "Justiça", icone: "fa-scale-unbalanced" },
+            { nome: "DEFENSORIA PÚBLICA MILITAR ESTADUAL", tipo: "Justiça e Disciplina", comandante: "Defensora", endereco: "Largo da Baixa do Bonfim, 41 - Bonfim, Salvador - BA", telefone: "(71) 3117-6648", email: "Não informado", setor: "Justiça", icone: "fa-scale-balanced" },
+
+            { nome: "DCS – DEPARTAMENTO DE COMUNICAÇÃO SOCIAL", tipo: "Departamento", comandante: "Diretor CEL PM ANDRÉ LUIS CARVALHO DE MELO", endereco: "Largo dos Aflitos, S/N, Centro, Salvador-BA.", telefone: "(71) 3116-8950", email: "dcs.diretor@pm.ba.gov.br", setor: "Administrativo", icone: "fa-bullhorn" },
+            { nome: "DAL – DEPARTAMENTO DE APOIO LOGÍSTICO", tipo: "Departamento", comandante: "Diretor CEL PM ANTONIO CARLOS DE OLIVEIRA", endereco: "5ª Avenida CAB - Cabula VI, Salvador - BA", telefone: "(71) 3115-9301", email: "dal.diretor@pm.ba.gov.br", setor: "Administrativo", icone: "fa-boxes-stacked" },
+            { nome: "DEPLAN – DEPARTAMENTO DE PLANEJAMENTO, ORÇAMENTO E GESTÃO", tipo: "Departamento", comandante: "Diretor CEL PM JONATHAS MATOS DE SANTANA", endereco: "5ª Avenida do CAB, 590 - Salvador - BA", telefone: "(71) 3117-9797", email: "deplan.diretor@pm.ba.gov.br", setor: "Administrativo", icone: "fa-chart-line" },
+            { nome: "DMT – DEPARTAMENTO DE MODERNIZAÇÃO E TECNOLOGIA", tipo: "Departamento", comandante: "Diretor CEL PM TAYLON TEIXEIRA CAVALCANTE", endereco: "5ª Avenida CAB - Cabula VI, Salvador - BA", telefone: "(71) 3115-9709", email: "taylon@pm.ba.gov.br", setor: "Tecnologia", icone: "fa-computer" },
+            { nome: "DPCDH – DEPARTAMENTO DE POLÍCIA COMUNITÁRIA E DIREITOS HUMANOS", tipo: "Departamento", comandante: "Diretor CEL PM RICARDO JOSÉ MARQUES MATTOS", endereco: "5ª Avenida CAB - Cabula VI, Salvador - BA", telefone: "Não informado", email: "dpcdh.srhsp@pm.ba.gov.br", setor: "Comunitário", icone: "fa-users" },
+            { nome: "DEPARTAMENTO DE AUDITORIA E FINANÇAS – DAF", tipo: "Departamento", comandante: "Diretor CEL PM FERNANDO JORGE PORTUGAL DO NASCIMENTO", endereco: "5ª Avenida CAB - Cabula VI, Salvador - BA", telefone: "(71) 3115-9750", email: "daf.diretor@pm.ba.gov.br", setor: "Financeiro", icone: "fa-money-bill-wave" },
+            { nome: "DP – DEPARTAMENTO DE PESSOAL", tipo: "Departamento", comandante: "Diretor CEL PM FERNANDO LEITE", endereco: "R. Conselheiro Spínola, 16 - Barris, Salvador - BA", telefone: "(71) 3117-6230", email: "dp.diretor@pm.ba.gov.br", setor: "Recursos Humanos", icone: "fa-address-card" },
+            { nome: "DPS – DEPARTAMENTO DE PROMOÇÃO SOCIAL", tipo: "Departamento", comandante: "Diretor CEL PM CARLOS CÉSAR ALBUQUERQUE PEREIRA", endereco: "R. Arquimedes Gonçalves, 18-116 - Nazaré, Salvador - BA", telefone: "(71) 3117-7318", email: "dps.diretor@pm.ba.gov.br", setor: "Social", icone: "fa-hand-holding-heart" },
+
+            { nome: "ASSEMBLÉIA LEGISLATIVA DA BAHIA", tipo: "Assistência Militar", comandante: "Assistente Militar TEN CEL PM GEORGE PORTO VIEIRA", endereco: "1ª Avenida CAB, 130 - Salvador - BA", telefone: "(71) 3115-7337", email: "georgeporto@pm.ba.gov.br", setor: "Geral", icone: "fa-building-user" },
+            { nome: "CÂMARA MUNICIPAL DE SALVADOR", tipo: "Assistência Militar", comandante: "Assistente Militar CEL PM MARCELO GRUN", endereco: "Praca Thome Souza, s/n - Centro Historico, Salvador - BA", telefone: "(71) 3320-0144", email: "Não informado", setor: "Geral", icone: "fa-building-user" },
+            { nome: "SECRETARIA DE SEGURANÇA PÚBLICA", tipo: "Assistência Militar", comandante: "Assistente Militar CEL PM ALEXANDRE MOTTA LIMA", endereco: "4ª Avenida, nº 430, CAB - Salvador - BA", telefone: "(71) 3115-1803", email: "Não informado", setor: "Geral", icone: "fa-building-user" },
+            { nome: "MINISTÉRIO PÚBLICO DO ESTADO DA BAHIA", tipo: "Assistência Militar", comandante: "Assistente Militar CEL PM GILBERTO MORBECK DE OLIVEIRA", endereco: "5ª Avenida CAB, 750 - Salvador - BA", telefone: "(71) 3103-0439", email: "Não informado", setor: "Geral", icone: "fa-building-user" },
+            { nome: "VICE-GOVERNADORIA", tipo: "Assistência Militar", comandante: "Assistente Militar CEL PM ROBSON CORREIA PACHECO", endereco: "R. Ivone Silveira, 213 - Narandiba, Salvador - BA", telefone: "(71) 3115-6436", email: "Não informado", setor: "Geral", icone: "fa-building-user" },
+            { nome: "PREFEITURA MUNICIPAL DE SALVADOR", tipo: "Assistência Militar", comandante: "Assistente Militar TEN CEL PM SÉRGIO MURILO SANTOS SILVA", endereco: "Praça Municipal, s/n Pálacio Thomé de Souza - Centro, Salvador - BA", telefone: "(71) 3202-6117", email: "assistenciamilitar@salvador.ba.gov.br", setor: "Geral", icone: "fa-building-user" },
+            { nome: "TRIBUNAL DE JUSTIÇA DO ESTADO DA BAHIA", tipo: "Assistência Militar", comandante: "Assistente Militar TEN CEL PM FÁBIO RODRIGO DE MELO OLIVEIRA", endereco: "5ª Avenida CAB, 560 , sala 313 S - Salvador - BA", telefone: "(71) 3372-5011", email: "rodrigo@pm.ba.gov.br", setor: "Geral", icone: "fa-building-user" },
+            { nome: "GABINETE DO COMANDO GERAL", tipo: "Gabinete", comandante: "Chefe de Gabinete CEL PM PAULO LUIZ DOS SANTOS CUNHA", endereco: "Largo dos Aflitos, S/N, Centro, Salvador-Ba.", telefone: "(71) 3117-6048", email: "paulo.luiz@pm.ba.gov.br", setor: "Administrativo", icone: "fa-briefcase" },
+            { nome: "COORDENAÇÃO DE SAÚDE – DS", tipo: "Coordenação", comandante: "Coordenador de Saúde CEL QOSPM IVANA TEIXEIRA ANDRADE", endereco: "Tv. Augusto de Mendonça - Boa Viagem, Salvador - BA", telefone: "(71) 3116-6297", email: "ds.secadm@pm.ba.gov.br", setor: "Saúde", icone: "fa-notes-medical" },
+            { nome: "DIRETORIA DE PLANEJAMENTO INTEGRADO – DPI/SIAP", tipo: "Diretoria", comandante: "Diretor CEL PM MAURÍCIO JOSÉ MARINHO DE SOUZA", endereco: "4ª Avenida, nº 430, 1º andar - CAB, Salvador - BA", telefone: "(71) 3115-1890", email: "Não informado", setor: "Planejamento", icone: "fa-sitemap" },
+            { nome: "STELECOM – SUPERINTENDÊNCIA DE TELECOMUNICAÇÕES", tipo: "Superintendência", comandante: "Superintendente CEL PM ANDRÉ PEREIRA BORGES", endereco: "4ª Avenida CAB, 417 - Salvador - BA", telefone: "(71) 3115-9351", email: "Não informado", setor: "Telecomunicações", icone: "fa-satellite-dish" },
+
+            { nome: "1ª CIPM – PERNAMBUÉS", tipo: "Companhia", comandante: "MAJ PM LEANDRO ALCÂNTARA DRUMMOND DE BURGOS", endereco: "R. Conde Pereira Carneiro, 120 - Pernambués, Salvador - BA", telefone: "(71) 3116-4646", email: "cipm1.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "2ª CIPM – BARBALHO", tipo: "Companhia", comandante: "MAJ PM CLEITON DE JESUS CARVALHO", endereco: "Blvd. América, 27 - Nazaré, Salvador - BA", telefone: "(71) 3116-6803", email: "cipm2.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "3ª CIPM – MORRO DO CHAPÉU", tipo: "Companhia", comandante: "MAJ PM CLAUDIO JOSE ARAUJO SOUZA", endereco: "R. Antônio Carlos Magalhães, S/N, Morro do Chapéu, BA", telefone: "(74) 99941-6728", email: "cipm3.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "4ª CIPM – MACAÚBAS", tipo: "Companhia", comandante: "MAJ PM FELISBERTO SÁ PACHECO", endereco: "Rua Santa Cruz, 226 , Centro, Macaúbas, BA", telefone: "(77) 3473-2966", email: "cipm4.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "4º BPM – ALAGOINHAS", tipo: "Batalhão", comandante: "TEN CEL PM CLEMERSON ROGERIO DE ARAUJO SOUSA", endereco: "Av. Cel. Filadéfio Neves, 42 - Juracy Magalhaes, Alagoinhas - BA", telefone: "(75) 99976-6555", email: "clemerson.rogerio@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "5º BPM – EUCLIDES DA CUNHA", tipo: "Batalhão", comandante: "TEN CEL PM JOSÉ ROBERTO SAMPAIO DE SOUZA", endereco: "BR-116, 1276 - Euclides da Cunha, BA", telefone: "(75) 99955-2226", email: "bpm5.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "6º BPM – SENHOR DO BOMFIM", tipo: "Batalhão", comandante: "TEN CEL PM NIVALDO PEREIRA MASCARENHAS", endereco: "Rua General Osório, n.º 14 - Centro, Senhor do Bonfim, BA", telefone: "(74) 3541-9718", email: "nivaldo.mascarenhas@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "7ª CIPM – MONTE SANTO", tipo: "Companhia", comandante: "MAJ PM TIAGO FONSECA LIMA", endereco: "Não informado", telefone: "Não informado", email: "Não informado", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "7º BPM – IRECÊ", tipo: "Batalhão", comandante: "TEN CEL PM ADRIANO SOUZA DIAS", endereco: "Rua Fundação Bradesco, S/N, Irecê/BA", telefone: "(74) 98101-9649", email: "bpm7.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "8ª CIPM – ITAPETINGA", tipo: "Companhia", comandante: "MAJ PM JOSE LEONARDO JAVIEL PIRES", endereco: "R. Pará - Itapetinga, BA", telefone: "(77) 3262-2404", email: "cipm8.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "8º BPM – PORTO SEGURO", tipo: "Batalhão", comandante: "TEN CEL PM ROBSON DE OLIVEIRA SOUZA", endereco: "BR-367, Km 57, Bairro Cambolo, Porto Seguro - BA", telefone: "(73) 99926-2914", email: "bpm8.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "9ª CIPM – PIRAJÁ", tipo: "Companhia", comandante: "MAJ PM ZANONY SOUTO DOS REIS NEVES", endereco: "R. Benjamin - Pirajá, Salvador - BA", telefone: "(71) 99611-0299", email: "cipm9.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "10ª CIPM – XIQUE-XIQUE", tipo: "Companhia", comandante: "MAJ PM DAVI DOS SANTOS NAZARIO", endereco: "Av. Cincinato Figueiredo, s/n, Xique-xique, BA", telefone: "(75) 99947-4336", email: "davi.nazario@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "11ª CIPM – BARRA/GRAÇA", tipo: "Companhia", comandante: "MAJ PM DIEGO PESTANA GUERREIRO", endereco: "Av. Sete de Setembro, 3426 - Barra, Salvador - BA", telefone: "(71) 99609-3322", email: "cipm11.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "11º BPM – ITABERABA", tipo: "Batalhão", comandante: "TEN CEL PM EDMÁRIO JOSÉ BRITTO ARAÚJO", endereco: "Avenida Luiz Viana Filho, Tv. do Batalhão, S/N, Itaberaba - BA", telefone: "(75) 3251-6957", email: "bpm11.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "12ª CIPM – ONDINA / RIO VERMELHO", tipo: "Companhia", comandante: "MAJ PM DANILO SILVA MASCARENHAS DE OLIVEIRA", endereco: "Rua Conselheiro Pedro Luiz, 171, Rio Vermelho", telefone: "(71) 3116-7907", email: "danilo.mascarenhas@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "12º BPM – CAMAÇARI", tipo: "Batalhão", comandante: "TEN CEL PM ROBERTO PINTO DE CASTRO", endereco: "Rua Ten. Fernando Tuy, 354 - Ponto Certo, Camaçari - BA", telefone: "(71) 99987-2330", email: "bpm12.cmd@pm.ba.gov.br", setor: "RMS", icone: "fa-building-shield" },
+            { nome: "13ª CIPM – PITUBA", tipo: "Companhia", comandante: "MAJ PM JEFFERSON PIRES SAMPAIO", endereco: "R. Arthur Napoleão de C Rêgo, 80 - Amaralina, Salvador - BA", telefone: "(71) 3116-3100", email: "cipm13.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "14ª CIPM – LOBATO", tipo: "Companhia", comandante: "MAJ PM ENALDO ARAUJO RODRIGUES JÚNIOR", endereco: "R. Aterro do Joanes, 149 - Lobato, Salvador - BA", telefone: "(71) 99984-8254", email: "enaldo.rodrigues@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "14º BPM – SANTO ANTÔNIO DE JESUS", tipo: "Batalhão", comandante: "TEN CEL PM MANOILZO BOMFIM CORDEIRO DAS NEVES", endereco: "Rua Cosme e Damião, s/ n.º - Andaia, Santo Antônio de Jesus - BA", telefone: "(75) 3631-3783", email: "manoilzo@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "15º BPM – ITABUNA", tipo: "Batalhão", comandante: "TEN CEL PM ROBSON FARIAS DA SILVA", endereco: "R. Manuel Chaves, 352 - Lomanto Júnior, Itabuna - BA", telefone: "(73) 3612-8553", email: "bpm15.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "16ª CIPM – COMÉRCIO", tipo: "Companhia", comandante: "MAJ PM ALEXANDRO SILVA CARVALHO", endereco: "R. Fernandes Vieira, 33 - Mares, Salvador/Ba", telefone: "(71) 99936-3701", email: "alexandro.carvalho@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "16º BPM – SERRINHA", tipo: "Batalhão", comandante: "TEN CEL PM MARIA APARECIDA VIEIRA TEIXEIRA", endereco: "AVENIDA ARACI. BAIRRO DA CIDADE NOVA. SERRINHA", telefone: "(75) 3261-9433", email: "maria.aparecida2@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "17ª CIPM – URUGUAI", tipo: "Companhia", comandante: "MAJ PM ZAQUEU VINAGRE DE LIMA", endereco: "R. Lopes Trovão, 174 - Massaranduba, Salvador - BA", telefone: "(71) 99987-9692", email: "cipm17.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "17º BPM – GUANAMBI", tipo: "Batalhão", comandante: "TEN CEL PM GILMARA SANTANA DE OLIVEIRA COUTINHO", endereco: "R. Benvindo Dias - Guanambi, BA", telefone: "(77) 3452-1444", email: "gilmara.oliveira@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "18ª CIPM – PERIPERI", tipo: "Companhia", comandante: "MAJ PM JORNILTON OLIVEIRA GUIMARÃES", endereco: "R. do Curió - Periperi, Salvador - BA", telefone: "(71) 99181-2501", email: "jornilton.guimaraes@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "18º BPM – CENTRO HISTÓRICO", tipo: "Batalhão", comandante: "TEN CEL PM CLÁUDIA MARA MENDES RAPOSO DE FREITAS", endereco: "Rua do Tijolo, n 68, J. J. Seabra", telefone: "(71) 9933-5140", email: "bpm18.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-building-shield" },
+            { nome: "19ª CIPM – PARIPE", tipo: "Companhia", comandante: "MAJ PM MARCUS VINICIUS PEREIRA BASTOS", endereco: "Av. Carioca de Paripe, S/N - Paripe, Salvador - BA", telefone: "(71) 99979-9518", email: "marcus.vinicius1@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "19º BPM – JEQUIÉ", tipo: "Batalhão", comandante: "TEN CEL PM CRISTIANO SILVA MENDES GOUVEIA", endereco: "484, Av. Ulisses Coelho, 262 - Km-3, Jequié - BA", telefone: "(73) 3527-1900", email: "cristiano.gouveia@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "20ª CIPM – SANTO AMARO", tipo: "Companhia", comandante: "MAJ PM GLEDSON SANTOS SILVA", endereco: "Av. García - Derba, Santo Amaro - BA", telefone: "(75) 99971-2975", email: "Não informado", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "20º BPM – PAULO AFONSO", tipo: "Batalhão", comandante: "TEN CEL PM EMILIA SILVA COSTA NETA", endereco: "R. Da Providência - Perpétuo Socorro, Paulo Afonso - BA", telefone: "(75) 3282-8034", email: "bpm20.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "21ª CIPM – Cipó", tipo: "Companhia", comandante: "Maj PM Rodrigo Cirne Ferreira", endereco: "Av. Genésio Sates, 164, Cipó - BA", telefone: "(75) 99968-7399", email: "cipm21.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "22ª CIPM – SIMÕES FILHO", tipo: "Companhia", comandante: "MAJ PM MANOEL PEREIRA JURITY FILHO", endereco: "R. Mal. Hermes da Fonseca - Lot. Mun., Simões Filho - BA", telefone: "(71) 99984-3827", email: "cipm22.cmd@pm.ba.gov.br", setor: "RMS", icone: "fa-map-location-dot" },
+            { nome: "22º BPM – CAJAZEIRAS", tipo: "Batalhão", comandante: "TEN CEL PM RICARDO MÁRCIO VIEIRA SANTANA", endereco: "Estr. do Coqueiro Grande, S/N - Fazenda Grande 2, Salvador - BA", telefone: "(71) 99920-3873", email: "bpm22.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-building-shield" },
+            { nome: "23ª CIPM – TANCREDO NEVES", tipo: "Companhia", comandante: "MAJ PM JOSAIR SANTIAGO PEREIRA DA SILVA", endereco: "Av. Edgard Santos - Doron, Salvador - BA", telefone: "(71) 99977-9662", email: "santiago@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "23º BPM – ILHA DE VERA CRUZ", tipo: "Batalhão", comandante: "TEN CEL PM VALDINO SACRAMENTO DA SILVA", endereco: "Estrada da rodagem, BA 532, DISEP, Mar Grande, Vera Cruz, BA", telefone: "(71) 3633-6676", email: "bpm23.cmd@pm.ba.gov.br", setor: "RMS", icone: "fa-building-shield" },
+            { nome: "24º BPM – BRUMADO", tipo: "Batalhão", comandante: "TEN CEL PM RONIVALDO PONTES DA SILVA", endereco: "Av. Centenário - Novo Brumado, Brumado - BA", telefone: "Não informado", email: "ronivaldo.pontes@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "25ª CIPM – CASA NOVA", tipo: "Companhia", comandante: "MAJ PM THIAGO RIBEIRO MIRANDA", endereco: "Q. GH - Borges, Casa Nova - BA", telefone: "(74) 93536-3010", email: "cipm25.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "25º BPM – FEIRA DE SANTANA", tipo: "Batalhão", comandante: "TEN CEL PM VALNEI DE AZEVEDO SILVA", endereco: "Av. Centenário, 366 - Sim, Feira de Santana - BA", telefone: "(75) 3614-4505", email: "azevedovalnei@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "26ª CIPM – BROTAS", tipo: "Companhia", comandante: "MAJ PM DANIEL NASCIMENTO FERREIRA", endereco: "Av. Laurindo Régis, s/n, Eng. Velho de Brotas, Salvador", telefone: "(71) 3116-5100", email: "cipm26.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "26º BPM – CANDEIAS", tipo: "Batalhão", comandante: "TEN CEL PM ANTONIO RICARDO DE ASSIS SANTOS", endereco: "BA-531, 31 - Caroba, Candeias - BA", telefone: "(71) 99991-7131", email: "cipm10.cmd@pm.ba.gov.br", setor: "RMS", icone: "fa-building-shield" },
+            { nome: "27ª CIPM – CRUZ DAS ALMAS", tipo: "Companhia", comandante: "MAJ PM MARCUS VINICIUS MASSARANDUBA MACHADO", endereco: "R. Ramiro Eloy Passos,131 , Coplan, Cruz das Almas", telefone: "(75) 3621-9500", email: "marcus.machado@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "27º BPM – LUIS EDUARDO MAGALHÃES", tipo: "Batalhão", comandante: "TEN CEL PM RICARDO PRUDÊNCIO GUEDES DIZ PAZOS", endereco: "Rua Xique-Xique, 530, Santa Cruz, Luís Eduardo Magalhães - BA", telefone: "(77) 99866-1567", email: "ricardo.pazos@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "28ª CIPM – IBOTIRAMA", tipo: "Companhia", comandante: "MAJ PM ORLANDO PITÁGORAS FREITAS NETO", endereco: "Avenida Ex-Combatentes, Nº 133, Centro, Ibotirama/BA", telefone: "(77) 99959-9748", email: "cipm28.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "28º BPM – EUNAPÓLIS", tipo: "Batalhão", comandante: "TEN CEL PM TELMO CARVALHO DO ESPÍRITO SANTO", endereco: "R. Pres. Kenedy, 125 - Centro, Eunápolis - BA", telefone: "(73) 98151-4390", email: "telmoselva@gmail.com", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "29ª CIPM – SEABRA", tipo: "Companhia", comandante: "MAJ PM ANDERSON GARCIA PIRES", endereco: "R. Félix Laureano Pires, S/N, Vasco Filho, Seabra - BA", telefone: "(75) 3331-1103", email: "cipm29.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "29º BPM – JACOBINA", tipo: "Batalhão", comandante: "TEN CEL PM ANTONIO FERNANDO TEIXEIRA DA SILVA", endereco: "Av. Lomanto Júnior, 8611 - Índios, Jacobina - BA", telefone: "(74) 99917-2886", email: "bpm29.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "30ª CIPM – SANTA MARIA DA VITÓRIA", tipo: "Companhia", comandante: "MAJ PM JONATHAN DA SILVA RIBEIRO MOCITAIBA", endereco: "Av. Roberto Santos - Santa Maria da Vitória, BA", telefone: "(77) 3483-3947", email: "cipm30.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "30º BPM – NORDESTE DE AMARALINA", tipo: "Batalhão", comandante: "TEN CEL PM JOEL BATISTA BATALHA", endereco: "Beco da Cultura, s/n - Nordeste, Salvador - BA", telefone: "(71) 99985-4682", email: "Não informado", setor: "Capital", icone: "fa-building-shield" },
+            { nome: "31ª CIPM – VALÉRIA", tipo: "Companhia", comandante: "Maj PM GABRIEL LIMA FRAGA", endereco: "R. C | Eng. Antônio Franco, 20 - Valéria, Salvador - BA", telefone: "(71) 99181-2501", email: "Não informado", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "31º BPM – VALENÇA", tipo: "Batalhão", comandante: "TEN CEL PM MARCOS DAVI SANTOS PINTO", endereco: "R. Augusta Guimarães, 140 - Valença, BA", telefone: "(75) 3641-7800", email: "marcos.davi@pm.ba.gov.br", setor: "Interior", icone: "fa-building-shield" },
+            { nome: "32ª CIPM – POJUCA", tipo: "Companhia", comandante: "TEN CEL PM GEORGETE CRISTINA CELESTINO CACHO", endereco: "Av. Percílio dos Santos, 616 - Pojuca Nova, Pojuca - BA", telefone: "(71) 99984-8177", email: "cipm32.cmd@pm.ba.gov.br", setor: "RMS", icone: "fa-map-location-dot" },
+            { nome: "32º BPM – ITAPUÃ", tipo: "Batalhão", comandante: "TEN CEL PM JOSÉ RAIMUNDO BARROS OLIVEIRA", endereco: "R. Passárgada, 311-367 - Itapuã, Salvador - BA", telefone: "(71) 3116-1300", email: "rbarros@pm.ba.gov.br", setor: "Capital", icone: "fa-building-shield" },
+            { nome: "35ª CIPM – IGUATEMI", tipo: "Companhia", comandante: "MAJ PM POLIANA FERNANDES ALVES VIANA", endereco: "Alameda dos Sombreiros, 1043 - Caminho das Árvores, Salvador - BA", telefone: "(71) 3116-5108", email: "cipm35.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "36ª CIPM – DIAS D’ÁVILA", tipo: "Companhia", comandante: "MAJ PM ADAUTO CARIBÉ DE SOUZA SANTOS", endereco: "1134, Av. Imbassay, 1046 - Santa Terezinha, Dias d'Ávila - BA", telefone: "(71) 3648-2785", email: "Não informado", setor: "RMS", icone: "fa-map-location-dot" },
+            { nome: "37ª CIPM – LIBERDADE", tipo: "Companhia", comandante: "MAJ PM ROMELL FARIAS CAMPOS", endereco: "R. Neves da Rocha - Caixa D'agua, Salvador - BA", telefone: "(71) 3117-1404", email: "romell.farias@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "38ª CIPM – BOM JESUS DA LAPA", tipo: "Companhia", comandante: "MAJ PM OSVALDO VELOSO VIDAL", endereco: "Avenida Maria de Lourdes Brandão, 197, Parque Verde, Bom Jesus da Lapa/BA", telefone: "(77) 3481-4730", email: "osvaldo.vidal@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "39ª CIPM – BOCA DO RIO / IMBUÍ", tipo: "Companhia", comandante: "MAJ PM FABIO EMANUEL REIS ATANASIO DOS SANTOS", endereco: "R. Marquês de Queluz, 169 - Pituaçu, Salvador - BA", telefone: "(71) 99995-9985", email: "cipm39.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "41ª CIPM – FEDERAÇÃO", tipo: "Companhia", comandante: "MAJ PM MÁRCIO DE ALCÂNTARA SANTOS", endereco: "R. Agnelo Brito, 53 - Federação, Salvador - BA", telefone: "(71) 99983-9702", email: "Não informado", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "42ª CIPM – LENÇOIS", tipo: "Companhia", comandante: "MAJ PM LEÔNIDAS DA SILVA PRATES DE MELO", endereco: "139, R. Sete de Setembro, 109, Lençóis - BA", telefone: "(75) 3334-1413", email: "cipm42.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "43ª CIPM – ITAMARAJU", tipo: "Companhia", comandante: "MAJ PM Ícaro Rebouças Coutinho", endereco: "Rua Acre, 244, Itamaraju - BA", telefone: "(73) 3294-5880", email: "cipm43.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "44ª CIPM – MEDEIROS NETO", tipo: "Companhia", comandante: "Maj PM FABIANO SANTOS LIMA", endereco: "R. Dr. Antônio Coelho Lima, 43 - Medeiros Neto, BA", telefone: "(73) 3296-2804", email: "cipm44.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "45ª CIPM – CURAÇÁ", tipo: "Companhia", comandante: "MAJ PM LIZANDRO SANTOS DO ROSÁRIO", endereco: "Av. Pedro Santos Tôrres, 256 - centro Curaçá, BA", telefone: "(74) 3531-1325", email: "lizandro.rosario@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "46ª CIPM – LIVRAMENTO DE NOSSA SENHORA", tipo: "Companhia", comandante: "MAJ PM WAGNER BARBOSA DA ROCHA", endereco: "DISTRITO DE - Iguatemi, Livramento de Nossa Sra. - BA", telefone: "(77) 3444-5555", email: "wagner.rocha@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "47ª CIPM – PAU DA LIMA", tipo: "Companhia", comandante: "MAJ PM MÁRCIO SOUZA PITANGUEIRA", endereco: "Travessa Clarice Barbosa, nº05, Jardim Cajazeiras", telefone: "(71) 99974-0172", email: "cipm47.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "48ª CIPM – SUSSUARANA", tipo: "Companhia", comandante: "MAJ PM HUGO MARCEL QUERINO DE ALMEIDA", endereco: "Almiro Pinho, R. da Praça - Sussuarana, Salvador - BA", telefone: "(71) 3117-2900", email: "Não informado", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "49ª CIPM – SÃO CRISTÓVÃO", tipo: "Companhia", comandante: "MAJ PM JORGE LUIZ CORDEIRO OLIVEIRA", endereco: "Av. São Cristóvão, 3926 - São Cristóvão, Salvador - BA", telefone: "(71) 3116-1600", email: "cipm49.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "50ª CIPM – SETE DE ABRIL", tipo: "Companhia", comandante: "MAJ PM CRISTIANO JOSÉ LIMA DE ARAÚJO", endereco: "R. Nossa Sra. do Carmo, s/n - Sete de Abril, Salvador - BA", telefone: "(71) 9984-8289", email: "cipm50.cmd@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "52ª CIPM – LAURO DE FREITAS", tipo: "Companhia", comandante: "MAJ PM RENATO BRITO DE SOUZA", endereco: "Av. Amarílio Thiago dos Santos, N° 144, Centro, Lauro de Freitas", telefone: "(71) 99617-7677", email: "cipm52.cmd@pm.ba.gov.br", setor: "RMS", icone: "fa-map-location-dot" },
+            { nome: "53ª CIPM – MATA DE SÃO JOÃO", tipo: "Companhia", comandante: "MAJ PM DANTON GUAYACANANS SILVEIRA DE ARAÚJO ADÃES MOTTA", endereco: "DISEP Praia do Forte. Av. Do Farol, s/n, Praia do Forte", telefone: "(71) 99950-5356", email: "danton.motta@pm.ba.gov.br", setor: "RMS", icone: "fa-map-location-dot" },
+            { nome: "54ª CIPM – CAMPO FORMOSO", tipo: "Companhia", comandante: "MAJ PM GIL ANDRÉ DE SANTANA LEITE", endereco: "R. das Orquídeas, 214-404 - Campo Formoso, BA", telefone: "(74) 3645-1190", email: "Não informado", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "55ª CIPM – IPIAÚ", tipo: "Companhia", comandante: "MAJ PM HEBER NASCIMENTO CORREIA", endereco: "Av. Lauro de Freitas, 549 - Bairro Lauro De Freitas, Ipiaú - BA", telefone: "(73) 3531-3070", email: "cipm55.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "56ª CIPM – ENTRE RIOS", tipo: "Companhia", comandante: "MAJ PM KLÉBER DA SILVA CRUZ", endereco: "R. Bom Jesus - Entre Rios, BA", telefone: "(75) 3420-3373", email: "cipm56.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "57ª CIPM – SANTO ESTEVÃO", tipo: "Companhia", comandante: "MAJ PM MARCOS KLEBER LEAL CAMPOS", endereco: "R. Genésio Cardoso, s/n, Santo Estêvão - BA", telefone: "(75) 3245-4501", email: "cipm57.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "58ª CIPM – COSME DE FARIAS", tipo: "Companhia", comandante: "MAJ PM DEMOSTENES PINHEIRO DA ENCARNAÇÃO", endereco: "R. Raul Leite, 153 - Vila Laura, Salvador - BA", telefone: "(71) 3116-2100", email: "demostenes.pinheiro@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "59ª CIPM – VILA DE ABRANTES", tipo: "Companhia", comandante: "MAJ PM JEANE NASCIMENTO FERREIRA DA SILVA SOUSA", endereco: "Estrada do Coco Km 23, Loteamento Fonte das Águas, Arembepe", telefone: "(71) 99650-6704", email: "cipm59.cmd@pm.ba.gov.br", setor: "RMS", icone: "fa-map-location-dot" },
+            { nome: "60ª CIPM – GANDU", tipo: "Companhia", comandante: "MAJ PM POLAKO POVOAS SANTOS", endereco: "Tv. Bahia, 1-67, Gandu - BA", telefone: "(73) 3254-3040", email: "cipm60.comando@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "61ª CIPM – UBAITABA", tipo: "Companhia", comandante: "MAJ PM KLEITON CARVALHO DOS SANTOS", endereco: "BR 101, Km 444, Centro - Ubaitaba/BA", telefone: "(73) 99991-1843", email: "cipm61.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "62ª CIPM – CAMACÃ", tipo: "Companhia", comandante: "MAJ PM ALEXSANDRO DE SOUZA CIDREIRA", endereco: "R. Everaldo Figueiredo dos Anjos, 219 - Camacan, BA", telefone: "(73) 3283-1540", email: "cipm62.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "63ª CIPM – IBICARAÍ", tipo: "Companhia", comandante: "MAJ PM CLAÚDIO DOS SANTOS COSTA LOPES", endereco: "R. Ambrosina Morais de Assis, Ibicaraí - BA", telefone: "(73) 99926-3338", email: "cipm63.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "64ª CIPM – FEIRA DE SANTANA", tipo: "Companhia", comandante: "MAJ PM DJOMAR PINHEIRO CRUZ", endereco: "Centro, Feira de Santana - BA", telefone: "(75) 99972-1284", email: "cipm64.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "65ª CIPM – FEIRA DE SANTANA", tipo: "Companhia", comandante: "Maj PM ROBSON ANTONIO OLIVEIRA DOS REIS", endereco: "Rua Santa Adélia, nº113 bairro Santa Mônica, Feira de Santana - BA", telefone: "(75) 3602-9597", email: "cipm65.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "66ª CIPM – CONCEIÇÃO DO JACUÍPE", tipo: "Companhia", comandante: "MAJ PM ROSUILSON DOS SANTOS CARDOSO", endereco: "Rua Dois de Julho, nº 18, Conceição do Jacuípe", telefone: "Não informado", email: "cipm66.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "67ª CIPM – FEIRA DE SANTANA", tipo: "Companhia", comandante: "Maj PM ERIC FERNANDO ALMEIDA DE JESUS", endereco: "Av. Sudene, nº 1111 - CIS, Feira de Santana - BA", telefone: "(75) 3602-3534", email: "cipm67.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "68ª CIPM – ILHEÚS/CENTRO", tipo: "Companhia", comandante: "MAJ PM CARLOS ANDERSON ARAÚJO DE JESUS", endereco: "Rua Major Homem D'el Rey, nº147, bairro Cidade Nova, Ilhéus - BA", telefone: "(73) 99817-7881", email: "cipm68.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "69ª CIPM – ILHEÚS", tipo: "Companhia", comandante: "MAJ PM REINALDO SANTANA SOEIRO", endereco: "Caminho Vinte - Hernani Sá, Ilhéus - BA", telefone: "(73) 3632-6611", email: "cipm69.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "70ª CIPM – ILHEÚS", tipo: "Companhia", comandante: "MAJ PM MARCOS ANDRE SILVA LEMOS", endereco: "BA-262, Distrito Industrial, Ilhéus - BA", telefone: "(73) 3639-8301", email: "cipm70.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "71ª CIPM – CANAVIEIRAS", tipo: "Companhia", comandante: "MAJ PM GERSON BARBOSA JÚNIOR", endereco: "R. Sérgio Almeida, 776, Centro - Canavieiras, BA", telefone: "(73) 99965-9819", email: "cipm71.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "72ª CIPM – ITACARÉ", tipo: "Companhia", comandante: "MAJ PM JADSON CARNEIRO DA SILVA", endereco: "R. João de Souza, 90 - Itacaré, BA", telefone: "(73) 3251-2242", email: "cipm72.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "73ª CIPM – JUAZEIRO", tipo: "Companhia", comandante: "MAJ PM TATIANE SANTOS MATOS", endereco: "Travessa São Miguel, S/N, Santo Antônio, Juazeiro -BA", telefone: "(74) 99917-4732", email: "tatiane.matos@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "74ª CIPM – JUAZEIRO", tipo: "Companhia", comandante: "MAJ PM ALEXSANDRO REGES DE SENA", endereco: "Q. Dezesseis - João Paulo II, Juazeiro - BA", telefone: "(74) 3162-1118", email: "alexsandro.sena@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "75ª CIPM – JUAZEIRO", tipo: "Companhia", comandante: "TEN CEL PM CRISTIANO ROBERTO SEIXAS ALMEIDA", endereco: "R. Aracajú, 23a - Dom Tomaz, Juazeiro - BA", telefone: "(74) 99917-2694", email: "cristiano.seixas@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "76ª CIPM – JUAZEIRO", tipo: "Companhia", comandante: "Maj PM SÉRGIO RICARDO DE CARVALHO MELO PITA", endereco: "Avenida Imperatriz, s/n, Antonio Conselheiro, Juazeiro - BA", telefone: "(74) 99944-7863", email: "cipm76.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "77ª CIPM – VITÓRIA DA CONQUISTA", tipo: "Companhia", comandante: "MAJ PM ORLINS DOS SANTOS ALMEIDA", endereco: "R. A, 45 - BNH, Vitória da Conquista - BA", telefone: "(77) 3422-7674", email: "orlins@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "78ª CIPM – VITÓRIA DA CONQUISTA", tipo: "Companhia", comandante: "MAJ PM DALMO PORTO DE ASSIS", endereco: "Av. Paraná, 1874 - Patagônia, Vitória da Conquista - BA", telefone: "(77) 99863-5740", email: "Não informado", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "79ª CIPM – POÇÕES", tipo: "Companhia", comandante: "MAJ PM ANA PAULA FAGUNDES ROCHA", endereco: "Cidade Jardins Poções - Loteamento, Poções - BA", telefone: "(77) 98124-7004", email: "paula.fagundes@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "80ª CIPM – CÂNDIDO SALES", tipo: "Companhia", comandante: "MAJ PM PATRICIA GOMES SANTANA", endereco: "Rua José Porto, S/N - Bairro Usina, Cândido Sales - BA", telefone: "(77) 99833-1861", email: "PATRICIA.SANTANA@PM.BA.GOV.BR", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "81ª CIPM – LAURO DE FREITAS / ITINGA", tipo: "Companhia", comandante: "MAJ PM ROBERTO CESAR PINHO DE OLIVEIRA", endereco: "R. Direta da Cachoeira, 1049-1107 - Fazenda Cassange, Salvador - BA", telefone: "(71) 3251-1144", email: "Não informado", setor: "RMS", icone: "fa-map-location-dot" },
+            { nome: "82ª CIPM – CAB", tipo: "Companhia", comandante: "MAJ PM AGÍLIO NUNES DOS SANTOS", endereco: "5ª Avenida do CAB, 590 - Centro Administrativo da Bahia, Salvador - BA", telefone: "(71) 98724-9557", email: "Agilio.nunes@pm.ba.gov.br", setor: "Capital", icone: "fa-map-location-dot" },
+            { nome: "83ª CIPM – BARREIRAS", tipo: "Companhia", comandante: "MAJ PM CRISTIANO ANDRADE DA GAMA", endereco: "Rua. Assembléia de Deus, 175 - Vila Brasil, Barreiras - BA", telefone: "(77) 99875-2182", email: "cipm83.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "84ª CIPM – BARREIRAS", tipo: "Companhia", comandante: "MAJ PM ALÃ CARLOS JESUS DOS SANTOS", endereco: "Rua Cristal, S/N, Parque da Cidade, Bela Vista, Barreiras-BA", telefone: "(77) 99875-3143", email: "cipm84.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "85ª CIPM – CACHOEIRA", tipo: "Companhia", comandante: "MAJ PM VITOR LUIS MACIEL SANTOS", endereco: "Rua Benjamin Constant n° 04, Centro, Cachoeira, Bahia", telefone: "(75) 99974-8711", email: "vitor.maciel@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "86ª CIPM – FORMOSA DO RIO PRETO", tipo: "Companhia", comandante: "MAJ PM MARCELO PEREIRA ROSA", endereco: "Av. Carlos Pinheiro, 370, Centro, Formosa do Rio Preto - BA", telefone: "(77) 99840-5226", email: "Não informado", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "87ª CIPM – TEIXEIRA DE FREITAS", tipo: "Companhia", comandante: "MAJ PM CARLOS EDUARDO BARBOSA DA SILVA", endereco: "Avenida das Nações, 410A, Monte Castelo Tx de Freitas/Ba", telefone: "(73) 3292-4567", email: "cipm87.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "88ª CIPM – ALCOBAÇA", tipo: "Companhia", comandante: "MAJ PM LEONARDO ÁLVARO VIEIRA PEREIRA", endereco: "R. Quinze, 826 - Alcobaça, BA", telefone: "(73) 3293-2185", email: "cipm88.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "89ª CIPM – MUCURI", tipo: "Companhia", comandante: "MAJ PM UENDEL SANTANA BONFIM", endereco: "Av. Central, 775 - Mucuri, BA", telefone: "(73) 99871-9560", email: "cipm89.srhsp@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "90ª CIPM – RIACHÃO DO JACUÍPE", tipo: "Companhia", comandante: "MAJ PM WASHINGTON DE SOUZA SANTOS", endereco: "RUA AURÉLIO RODRIGUES MASCARENHAS, 481 - CENTRO", telefone: "(75) 3264-2990", email: "cipm90.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "91ª CIPM – CAPIM GROSSO", tipo: "Companhia", comandante: "MAJ PM SAMUEL SAMPAIO DE MIRANDA", endereco: "Capim Grosso - BA, 44695-000", telefone: "(74) 3651-0256", email: "cipm91.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "92ª CIPM – VITÓRIA DA CONQUISTA / RONDA RURAL", tipo: "Companhia", comandante: "MAJ PM MAURO FLORÊNCIO DE LIMA JÚNIOR", endereco: "Av. Paraná, 2641-2705 - Kadija, Vitória da Conquista - BA", telefone: "(77) 99875-6285", email: "mauro.junior@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "93ª CIPM – MARACÁS", tipo: "Companhia", comandante: "MAJ PM RENER LEAL OLIVEIRA", endereco: "Não informado", telefone: "(73) 3533-2160", email: "Não informado", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "94ª CIPM – CAETITÉ", tipo: "Companhia", comandante: "TEN CEL PM JOSÉ ROBERTO SUAREZ SANT’ANNA", endereco: "R. Dois de Julho, 442-478 - Caetité, BA", telefone: "(77) 3454-2301", email: "joseroberto.santanna@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "96ª CIPM – SOBRADINHO", tipo: "Companhia", comandante: "MAJ PM FRANCISCO ÂNGELO DE SOUSA", endereco: "R. Dois, 3 - Bloco D-2 - Vila São Francisco, Sobradinho - BA", telefone: "(74) 3538-1077", email: "angelo.sousa@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "97ª CIPM – IRARÁ", tipo: "Companhia", comandante: "MAJ PM LILIAN CONCEIÇÃO NASCIMENTO", endereco: "Av. Pedro Nolasco de Pinho, 393 - Irará, BA", telefone: "(75) 98139-6254", email: "cipm97.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "98ª CIPM – IPIRÁ", tipo: "Companhia", comandante: "MAJ PM GILIAM COSTA DA SILVA", endereco: "Av. Rio Grande do Sul, s/n - Flor da Chapada, Ipirá - BA", telefone: "(75) 99959-7459", email: "cipm98.cmd@pm.ba.gov.br", setor: "Interior", icone: "fa-map-location-dot" },
+            { nome: "99ª CIPM – AMARGOSA", tipo: "Companhia", comandante: "MAJ PM ELISMAR SILVA DE JESUS", endereco: "Tv. Almiro Vaz Sampaio - Amargosa, BA", telefone: "(75) 3634-2590", email: "Não informado", setor: "Interior", icone: "fa-map-location-dot" },
+
+            { nome: "BATALHÃO DE POLICIAMENTO TÁTICO – ATLÂNTICO", tipo: "Batalhão Tático (CIPT)", comandante: "TEN CEL PM HILDEGARD DANTAS MOURA", endereco: "Rua Coronel Durval Mattos, 668 - Costa Azul, Salvador", telefone: "(71) 99974-5280", email: "cipt.cprc.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "BATALHÃO DE POLICIAMENTO TÁTICO/BTS", tipo: "Batalhão Tático (CIPT)", comandante: "TEN CEL PM ANA ÁUREA DE SOUZA CIDREIRA", endereco: "Tv. Augusto de Mendonça - Boa Viagem, Salvador - BA", telefone: "(71) 99611-0269", email: "ciptbts.sat@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "BATALHÃO DE POLICIAMENTO TÁTICO – CENTRAL", tipo: "Batalhão Tático (CIPT)", comandante: "TEN CEL PM MATHEUS RODRIGUES DE ALCANTARA SANTOS", endereco: "Avenida Antônio Carlos Magalhães, nº 4.362, Pernambués, Salvador/BA", telefone: "(71) 99659-4991", email: "cipt.central.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "BATALHÃO DE POLICIAMENTO TÁTICO/RMS", tipo: "Batalhão Tático (CIPT)", comandante: "TEN CEL MOISÉS MEDINA TRAVESSA DE SOUZA", endereco: "Avenida Engenheiro Valter Aragão de Souza, nº 1249, Simões Filho/BA", telefone: "(71) 99611-0309", email: "cipt.cprms.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "BATALHÃO DE POLICIAMENTO TÁTICO – LESTE", tipo: "Batalhão Tático (CIPT)", comandante: "TEN CEL PM RAIMUNDO ALVES TRINDADE", endereco: "R. Profa. Edelvira de Oliveira, 444 - São JOÃO, Feira de Santana - BA", telefone: "Não informado", email: "bpt.leste.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "CIPT/NORTE", tipo: "Batalhão Tático (CIPT)", comandante: "MAJ PM GILVANI DENISON NASCIMENTO DE AGUIAR", endereco: "Avenida Benedito de Almeida Moraes - Alto da Alianca, Juazeiro - BA", telefone: "(74) 98118-1791", email: "rondespnorte.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "CIPT/SUL", tipo: "Batalhão Tático (CIPT)", comandante: "MAJ PM ANTÔNIO CARLOS DOS SANTOS SILVA JÚNIOR", endereco: "BR-415(Rodovia Jorge Amado), km22, Salobrinho, Ilhéus, BA.", telefone: "(73) 99944-8514", email: "ciptsul.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "CIPT EXTREMO SUL", tipo: "Batalhão Tático (CIPT)", comandante: "MAJ PM EVARISTO ALVES BRANDÃO JÚNIOR", endereco: "Av. Gonçalves Lêdo, 1125 - Bela Vista, Teixeira de Freitas - BA", telefone: "(73) 99957-6611", email: "ciptes.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "CIPT – NORDESTE", tipo: "Batalhão Tático (CIPT)", comandante: "MAJ PM THIAGO DE CARVALHO ANDRADE", endereco: "Rua Monsenhor Magalhães, 973, Centro, Paulo Afonso - BA", telefone: "(75) 98103-6682", email: "ciptne.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "CIPT/MEIO OESTE", tipo: "Batalhão Tático (CIPT)", comandante: "MAJ PM JARBAS SILVA DOS SANTOS", endereco: "Rua Goiás, Quadra 19, nº 153, Lagoa Grande, Bom Jesus da Lapa - BA", telefone: "(77) 98102-5569", email: "jarbas.santos@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "CIPT/OESTE", tipo: "Batalhão Tático (CIPT)", comandante: "MAJ PM HARLEY SANTOS PEREIRA", endereco: "R. Estação Elevatória, 174 - Morada Nobre, Barreiras - BA", telefone: "(77) 99846-6032", email: "cipt.oeste.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "CIPT/SUDOESTE", tipo: "Batalhão Tático (CIPT)", comandante: "MAJ PM IGOR DE SANTANA", endereco: "Av. Paraná - Kadija, 2001 - Vitória da Conquista - BA", telefone: "(77) 3429-4245", email: "igor.santana@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "CIPT/CHAPADA", tipo: "Batalhão Tático (CIPT)", comandante: "MAJ PM RONALDE FIÚZA DE SANTANA", endereco: "Av. Rio Branco, Itaberaba - BA", telefone: "(75) 3251-6360", email: "ciptchp.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "CIPT RECÔNCAVO", tipo: "Batalhão Tático (CIPT)", comandante: "MAJ PM MARCIO CARDOSO DE OLIVEIRA", endereco: "R. Rosalvo Fonseca, 168 - Centro, Santo Antônio de Jesus - BA", telefone: "(71) 98866-0367", email: "reconcavo.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "CIPT/MÉDIO RIO DE CONTAS", tipo: "Batalhão Tático (CIPT)", comandante: "MAJ PM EDSON JOSE CORREIA JUNIOR", endereco: "484, Av. Ulisses Coelho, 262 - Km-3, Jequié - BA", telefone: "Não informado", email: "edson.correia@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "CIPT/LITORAL NORTE", tipo: "Batalhão Tático (CIPT)", comandante: "MAJ PM ALEX SILVANY OLIVEIRA", endereco: "Rua Cel. Filadelfo Neves, nº 42, Av. Juracy Magalhães, Alagoinhas.", telefone: "Não informado", email: "silvany@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+            { nome: "CIPT/CENTRO NORTE", tipo: "Batalhão Tático (CIPT)", comandante: "MAJ PM THIAGO DA SILVA OLIVEIRA", endereco: "Rua Antônio Carlos Magalhães, Centro, Lapao", telefone: "Não informado", email: "thiago.oliveira@pm.ba.gov.br", setor: "Especializada", icone: "fa-crosshairs" },
+
+            { nome: "CIPE – CAATINGA", tipo: "Especializada (CIPE)", comandante: "MAJ PM ÉRICO DE CARVALHO", endereco: "R. da Grécia, Chorrochó - BA", telefone: "(74) 3162-1141", email: "cipe.caatinha.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-bolt" },
+            { nome: "CIPE – CERRADO", tipo: "Especializada (CIPE)", comandante: "MAJ PM CICERO ADSON DE JESUS QUESADO", endereco: "Rua Rio Grande, n.º 848, Boa Vista. Luís Eduardo Magalhães", telefone: "(77) 3628-5568", email: "cipe.cerrado.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-bolt" },
+            { nome: "CIPE – MATA ATLÂNTICA", tipo: "Especializada (CIPE)", comandante: "MAJ PM DERMEVAL MOTA LIMA JÚNIOR", endereco: "Rodovia BR 418, KM 37, Posto da Mata, Nova Viçosa - BA", telefone: "(73) 3209-3054", email: "cipe.mataatlantica.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-bolt" },
+            { nome: "CIPE – SEMIÁRIDO", tipo: "Especializada (CIPE)", comandante: "MAJ PM FABRÍCIO SOUZA GOMES", endereco: "Rodovia BA-052, s/n, Bairro Nair Barreto, Xique-Xique/BA", telefone: "(74) 3661-2540", email: "cipe.semiarido.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-bolt" },
+            { nome: "CIPE – SUDOESTE", tipo: "Especializada (CIPE)", comandante: "MAJ PM GILBERTO JOSÉ DA SILVA FILHO", endereco: "Rua O, S/N, Bairro São Pedro, Vitória da Conquista-Ba", telefone: "(77) 99989-1965", email: "cipe.sudoeste.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-bolt" },
+            { nome: "CIPE – LITORAL NORTE", tipo: "Especializada (CIPE)", comandante: "MAJ PM JORGE ALAN PEREIRA CYLINDRO", endereco: "Fazenda Lazer 4 irmãos, BA 233, km 01 - Esplanada - Bahia", telefone: "(75) 99971-8569", email: "cipe.litoralnorte.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-bolt" },
+            { nome: "CIPE – CACAUEIRA", tipo: "Especializada (CIPE)", comandante: "MAJ PM KLEBERSON CUNHA DE MENEZES", endereco: "Rod. BA-262 (Ilhéus/Uruçuca), KM 04, Iguape, Ilhéus - BA", telefone: "(73) 99944-9153", email: "kleberson.menezes@pm.ba.gov.br", setor: "Especializada", icone: "fa-bolt" },
+            { nome: "CIPE – POLO INDUSTRIAL", tipo: "Especializada (CIPE)", comandante: "MAJ PM JULIO CEZAR MUNIZ LISBOA", endereco: "Rodovia BA-512, km 1,5- Polo Industrial, Camaçari", telefone: "(71) 3634-3450", email: "cipe.poloindustrial.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-bolt" },
+            { nome: "CIPE – CENTRAL", tipo: "Especializada (CIPE)", comandante: "MAJ PM HELIO HENRIQUE DE MATOS DO NASCIMENTO", endereco: "R. Jucá Rebouças, 308-460 - Jequiezinho, Jequié - BA", telefone: "(73) 3528-2710", email: "cipe.central.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-bolt" },
+            { nome: "CIPE – CHAPADA", tipo: "Especializada (CIPE)", comandante: "MAJ PM JOANISIO DE CARVALHO ESTRELA JUNIOR", endereco: "Avenida 28 de agosto, s/n, Cruzeiro do Rocha, Ruy Barbosa-BA", telefone: "(75) 3252-2905", email: "joanisio.junior@pm.ba.gov.br", setor: "Especializada", icone: "fa-bolt" },
+            { nome: "CIPE – NORDESTE", tipo: "Especializada (CIPE)", comandante: "Maj PM Sivalnei Sales Bispo", endereco: "Av. Pedro Rodrigues da Conceição, 540, Ribeira do Pombal - BA", telefone: "(75) 3276-4170", email: "sivalnei.bispo@pm.ba.gov.br", setor: "Especializada", icone: "fa-bolt" },
+            { nome: "CIPE-LESTE", tipo: "Especializada (CIPE)", comandante: "Maj PM DENIS ANDERSON DE ALMEIDA BARBOSA", endereco: "Av. Sen. Quintino, s/n - Aviário, Feira de Santana - BA", telefone: "(75) 98104-1056", email: "cipeleste.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-bolt" },
+            { nome: "CIPE – RECÔNCAVO", tipo: "Especializada (CIPE)", comandante: "MAJ PM SANDRO DOURIVAL JESUS DOS SANTOS", endereco: "Rua São Cristóvão, Centro, S/N - Salinas das Margaridas-Ba", telefone: "(75) 99286-6408", email: "cipe.reconcavo.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-bolt" },
+
+            { nome: "BATALHÃO DE POLICIA DE CHOQUE – BPChq", tipo: "Batalhão Especializado", comandante: "Ten Cel PM JÚLIO CÉSAR FERREIRA DOS SANTOS", endereco: "R. 15 de Janeiro, s/n - Caji, Lauro de Freitas - BA", telefone: "(71) 3378-8577", email: "bpchq.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-shield-virus" },
+            { nome: "GRUPAMENTO AÉREO – GRAER", tipo: "Grupamento Aéreo", comandante: "TEN CEL PM CARLOS VICTOR TARANTO LIMA BRAGA FILHO", endereco: "Rua A, Lote 06, Setor de Hangares do Aeroporto de Salvador", telefone: "(71) 99611-0323", email: "taranto@pm.ba.gov.br", setor: "Especializada", icone: "fa-helicopter" },
+            { nome: "BATALHÃO DE OPERAÇÕES POLICIAIS ESPECIAIS – BOPE", tipo: "Batalhão Especializado", comandante: "Ten Cel PM CIS DE PAULA BAHIENSE", endereco: "R. 15 de Janeiro, s/n - Caji, Lauro de Freitas - BA", telefone: "(71) 3378-9246", email: "bope.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-meteor" },
+            { nome: "BATALHÃO DE PATRULHAMENTO TÁTICO MÓVEL – BPATAMO", tipo: "Batalhão Especializado", comandante: "TEN CEL PM JORGE RAMOS DE LIMA FILHO", endereco: "R. 15 de Janeiro, s/n - Caji, Lauro de Freitas - BA", telefone: "Não informado", email: "bpatamo.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-truck-fast" },
+            { nome: "BEPE – BATALHÃO ESPECIALIZADO DE POLICIAMENTO DE EVENTOS", tipo: "Batalhão Especializado", comandante: "TEN CEL PM CARLOS FLÁVIO GOES FARIAS", endereco: "Rua dos Rádios Amadores s/n Pituaçu, Salvador - BA", telefone: "(71) 98745-3180", email: "BEPE.CMD@PM.BA.GOV.BR", setor: "Especializada", icone: "fa-people-group" },
+            { nome: "BPGD – BATALHÃO DE POLÍCIA DE GUARDAS", tipo: "Batalhão Especializado", comandante: "TEN CEL PM UILDNEI CARLOS DO NASCIMENTO ROCHA", endereco: "Rua Cardeal Avelar Brandão Vilela, S/N, Mata Escura, Salvador/BA", telefone: "(71) 99108-7063", email: "uildnei@pm.ba.gov.br", setor: "Especializada", icone: "fa-building-lock" },
+            { nome: "BATALHÃO DE POLICIAMENTO TURÍSTICO – BPTur", tipo: "Batalhão Especializado", comandante: "TEN CEL PM ANA PAULA COSTA DE QUEIROS", endereco: "R. do Tijolo, 26 - Centro, Salvador, 3º Andar - BA", telefone: "(71) 99660-4420", email: "beptur.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-umbrella-beach" },
+            { nome: "BATALHÃO DE POLICIAMENTO ESCOLAR – BPEsc", tipo: "Batalhão Especializado", comandante: "TEN CEL PM VOLMAR NASCIMENTO DE SOUZA", endereco: "R. Luciano Gomes, 123e - Jardim Cajazeiras, Salvador - BA", telefone: "(71) 99283-3937", email: "bpesc.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-school-flag" },
+            { nome: "BATALHAO DE POLICIAMENTO DE PROTEÇÃO À MULHER – BPPM", tipo: "Batalhão Especializado", comandante: "TEN CEL PM ROSELI DE SANTANA RAMOS", endereco: "Rua Dr. Barreto, n° 343, Jardim Aeroporto, Lauro de Freitas – BA", telefone: "(71) 99967-7421", email: "bppm.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-person-dress" },
+            { nome: "BATALHÃO DE POLICIAMENTO DE PREVENÇÃO A FURTOS E ROUBOS A COLETIVOS – BPFRC", tipo: "Batalhão Especializado", comandante: "TEN CEL PM CARLOS EMILIANO FIGUEIREDO FILHO", endereco: "Rua Dr. Boureau - Costa Azul, Salvador - BA", telefone: "(71) 99737-0942", email: "bpfrc.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-bus" },
+            { nome: "BATALHÃO DE POLICIAMENTO DE PREVENÇÃO A FURTOS E ROUBOS DE VEÍCULOS – BPFRV", tipo: "Batalhão Especializado", comandante: "Ten Cel PM Edmundo Assemany Felippi Júnior", endereco: "Rua Fernando José Guimarães Rocha, 40 - Pituaçu, Salvador - BA", telefone: "(71) 98182-9395", email: "bpfrv.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-car" },
+            { nome: "BATALHÃO DE POLÍCIA DE PRONTO EMPREGO OPERACIONAL – BPEO", tipo: "Batalhão Especializado", comandante: "TEN CEL PM MARCELO DOS SANTOS CARVALHO", endereco: "Largo dos Aflitos, s/n - Dois de Julho, Salvador - BA", telefone: "(71) 3116-8011", email: "bpro.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-bolt" },
+            { nome: "COMPANHIA INDEPENDENTE DE POLÍCIA FAZENDÁRIA – CIPFAZ", tipo: "Especializada (Cia)", comandante: "MAJ PM DANIEL BEZERRA CORRÊA", endereco: "Rua Cristiano Buys, 117 - Pernambués, Salvador -BA", telefone: "(71) 3116-4403", email: "cipfaz.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-file-invoice-dollar" },
+            { nome: "COMPANHIA INDEPENDENTE DE MEDIAÇÃO DE CONFLITOS AGRÁRIOS E URBANOS – CIMCAU", tipo: "Especializada (Cia)", comandante: "MAJ PM MICHAEL JOSÉ PINHO DA SILVA", endereco: "Rua do Tijolo, 26, 1º andar - Centro, Salvador - BA", telefone: "(71) 99979-1750", email: "cimcau.cmd@pm.ba.gov.br", setor: "Especializada", icone: "fa-handshake-angle" },
+
+            { nome: "ESQDMCL-SSA – ESQUADRÃO DE MOTOCICLISTAS – SALVADOR – ÁGUIA", tipo: "Esquadrão", comandante: "MAJ PM LUCAS DÃ SANTANA BARRETO", endereco: "rua do corte grande 410 alto de ondina", telefone: "(71) 9925-0925", email: "lucas.barreto@pm.ba.gov.br", setor: "Trânsito", icone: "fa-motorcycle" },
+            { nome: "ESQDMCL-FSA – ESQUADRÃO DE MOTOCICLISTAS – FEIRA DE SANTANA – ASA BRANCA", tipo: "Esquadrão", comandante: "MAJ PM RAFAEL SINGH SACHDEV", endereco: "BR 116 Norte, km 2 Antigo DERBA - Campo Limpo, Feira de Santana - BA", telefone: "(75) 99901-5506", email: "rafael.sachdev@pm.ba.gov.br", setor: "Trânsito", icone: "fa-motorcycle" },
+            { nome: "ESQDMCL-VCA – ESQUADRÃO DE MOTOCICLISTAS – VITÓRIA DA CONQUISTA – FALCÃO", tipo: "Esquadrão", comandante: "Major PM Karol Lucchesi Conceição", endereco: "Rua G, 08 - Alto do Candeias, Vitória da Conquista - BA", telefone: "(77) 99922-1472", email: "karol@pm.ba.gov.br", setor: "Trânsito", icone: "fa-motorcycle" },
+            { nome: "ESQDMCL-RMS – ESQUADRÃO DE MOTOCICLISTAS – RMS – FÊNIX", tipo: "Esquadrão", comandante: "MAJ PM LUCAS MALTA SANTOS", endereco: "RUA TEN FERNADO TUY, N354 PONTO CERTO CAMACARI", telefone: "(71) 98162-8301", email: "esqd.mcl.rms@pm.ba.gov.br", setor: "Trânsito", icone: "fa-motorcycle" },
+            { nome: "ESQDPMONT-SSA – ESQUADRÃO DE POLÍCIA MONTADA – SALVADOR", tipo: "Esquadrão Montado", comandante: "MAJ PM VIINICIUS MORENO DE JESUS VIEIRA", endereco: "Rua da E.B.D.A s/n - Itapuã", telefone: "(71) 99281-9739", email: "esqd.pmont.cmd@pm.ba.gov.br", setor: "Montada", icone: "fa-horse" },
+            { nome: "ESQDPMONT-FSA – ESQUADRÃO DE POLÍCIA MONTADA – FEIRA DE SANTANA", tipo: "Esquadrão Montado", comandante: "MAJ PM Anderson Santos Rodrigues", endereco: "Rua real S/N Fazenda Cel Antidio Distrito de Maria Quiteria Feira de Santana", telefone: "(71) 98812-8913", email: "esqdpmont.fsa.comando@pm.ba.gov.br", setor: "Montada", icone: "fa-horse" },
+            { nome: "ESQDPMONT- ITA – ESQUADRÃO DE POLÍCIA MONTADA – ITABUNA", tipo: "Esquadrão Montado", comandante: "MAJ PM LEANDRO FERREIRA DOS SANTOS", endereco: "Rua Senhor do Bonfim, n 102, bairro Novo São Caetano, Itabuna", telefone: "(73) 99811-6513", email: "esqdpmont.itabuna.cmd@pm.ba.gov.br", setor: "Montada", icone: "fa-horse" },
+
+            { nome: "COPPA – CIA DE POLÍCIA DE PROTEÇÃO AMBIENTAL/PITUAÇU", tipo: "Ambiental", comandante: "TEN CEL PM ÉRICA PATRÍCIA SANTOS SILVA", endereco: "R. Sítio do Pombal - Pituaçu, Salvador - BA", telefone: "(71) 99977-1079", email: "coppa.salvador.cmd@pm.ba.gov.br", setor: "Ambiental", icone: "fa-leaf" },
+            { nome: "CIPPA-LEC – CIA INDEPENDENTE DE POLÍCIA DE PROTEÇÃO AMBIENTAL – LENÇÓIS", tipo: "Ambiental", comandante: "MAJ PM ADRIANA VILAS BOAS DE ATHAYDE", endereco: "BR-242- Aeroporto Cel. Horácio de Matos- DistritoCel Octaviano Alves, Lençóis/BA", telefone: "(75) 99833-7668", email: "cippa.lencois.cmd@pm.ba.gov.br", setor: "Ambiental", icone: "fa-leaf" },
+            { nome: "CIPPA-PSG – CIA INDEPENDENTE DE POLÍCIA DE PROTEÇÃO AMBIENTAL – PORTO SEGURO", tipo: "Ambiental", comandante: "MAJ PM SÁVIO DE JESUS DA SILVA", endereco: "BR 367, KM 41, Estação da Ceplac , s/n, Porto Seguro - BA", telefone: "(77) 99962-2445", email: "cippa.ps.cmd@pm.ba.gov.br", setor: "Ambiental", icone: "fa-leaf" },
+
+            { nome: "BPRV – BATALHÃO DE POLÍCIA RODOVIÁRIA", tipo: "Rodoviário", comandante: "TEN CEL PM FABRÍCIO DE OLIVEIRA SILVA", endereco: "Rodovia BA 528, Km 10 S/N - Pq. Rodoviário DERBA, Salvador - BA", telefone: "(71) 99963-2290", email: "bprv.cmd@pm.ba.gov.br", setor: "Rodoviário", icone: "fa-road" },
+            { nome: "CIPRV – ITABUNA", tipo: "Rodoviário (Cia)", comandante: "MAJ PM ITAMAR DA ENCARNAÇÃO FERREIRA", endereco: "Av. José Soares Pinheiro, 1289 - Centro, Itabuna - BA", telefone: "(73) 3212-2866", email: "ciprv.itabuna.cmd@pm.ba.gov.br", setor: "Rodoviário", icone: "fa-road" },
+            { nome: "CIPRV – BRUMADO", tipo: "Rodoviário (Cia)", comandante: "MAJ PM ROGERIO CARDOSO FREITAS", endereco: "R. Xique-Xique, 450 - Patagônia, Vitória da Conquista - BA", telefone: "(77) 3424-2235", email: "Não informado", setor: "Rodoviário", icone: "fa-road" },
+            { nome: "CIPRV – BARREIRAS", tipo: "Rodoviário (Cia)", comandante: "MAJ PM CARLOS NASCIMENTO SIMÕES", endereco: "BA-826, Barreiras - BA", telefone: "(77) 99994-4533", email: "carlos.simoes@pm.ba.gov.br", setor: "Rodoviário", icone: "fa-road" },
+            { nome: "CIPRV – JUAZEIRO", tipo: "Rodoviário (Cia)", comandante: "MAJ PM ALCIDES ALVES DE MENEZES", endereco: "Rodovia BA-210, KM 388, Loteamento Lagoa das Areias, Juazeiro-BA", telefone: "(74) 99963-2322", email: "alcides.alves@pm.ba.gov.br", setor: "Rodoviário", icone: "fa-road" },
+
+            { nome: "CIPGD-FSA – CIA INDEPENDENTE DE POLÍCIA DE GUARDA – FEIRA DE SANTANA", tipo: "Guarda (Cia)", comandante: "MAJ PM JEFERSON MATOS CAPINAN DA SILVA", endereco: "Rua Alney Alberto São Paulo, 35 BI, Subae, Feira de Santana, BA", telefone: "(75) 99977-4352", email: "jeferson.capinan@pm.ba.gov.br", setor: "Guarda", icone: "fa-building-lock" },
+            { nome: "CIPGD-ITA – CIA INDEPENDENTE DE POLÍCIA DE GUARDA – ITABUNA", tipo: "Guarda (Cia)", comandante: "MAJ PM MIGUEL ANGELO HERMANO DE OLIVEIRA", endereco: "Av. José Soares Pinheiro - Centro Comercial, Itabuna - BA", telefone: "(73) 99905-7690", email: "cipgditabuna.cmd@pm.ba.gov.br", setor: "Guarda", icone: "fa-building-lock" },
+
+            { nome: "1º BEIC – FEIRA DE SANTANA", tipo: "Batalhão de Ensino", comandante: "TEN CEL PM EBENEZER NOEL CARNEIRO DA SILVA TUY", endereco: "Av. Frei Félix de Pacauba, 390 - Campo Limpo, Feira de Santana", telefone: "(75) 3226-2151", email: "bpm1.cmd@pm.ba.gov.br", setor: "Ensino", icone: "fa-graduation-cap" },
+            { nome: "2º BEIC – ILHÉUS", tipo: "Batalhão de Ensino", comandante: "TEN CEL PM WASHINGTON LUIS PARAISO DA FONSECA", endereco: "Av. Vereador Amilton de Castro, s/n. Bairro Barra de Itaípe. Ilhéus/BA", telefone: "(73) 99809-6311", email: "washington.fonseca@pm.ba.gov.br", setor: "Ensino", icone: "fa-graduation-cap" },
+            { nome: "3º BEIC – JUAZEIRO", tipo: "Batalhão de Ensino", comandante: "TEN CEL PM CLAUDEMAR PIMENTA GOES", endereco: "Av. Rod. Lomanto Júnior, s/n - km 4 - Castelo Branco, Juazeiro - BA", telefone: "(74) 3613-8565", email: "bpm3.cmd@pm.ba.gov.br", setor: "Ensino", icone: "fa-graduation-cap" },
+            { nome: "9º BEIC – VITÓRIA DA CONQUISTA", tipo: "Batalhão de Ensino", comandante: "TEN CEL PM EDUARDO VIEIRA MOREIRA JÚNIOR", endereco: "Feirinha, Vitória da Conquista - BA", telefone: "(77) 3426-1325", email: "beic9.cmd@pm.ba.gov.br", setor: "Ensino", icone: "fa-graduation-cap" },
+            { nome: "10º BEIC – BARREIRAS", tipo: "Batalhão de Ensino", comandante: "TEN CEL PM ERNEST CESAR PORTAS BECK", endereco: "Rua Rui Barbosa, nº 1134, Vila Regina, Barreiras/BA", telefone: "(77) 3611-4732", email: "beic10.cmd@pm.ba.gov.br", setor: "Ensino", icone: "fa-graduation-cap" },
+            { nome: "13º BEIC – TEIXEIRA DE FREITAS", tipo: "Batalhão de Ensino", comandante: "TEN CEL PM MARCELO SOUZA LIMA", endereco: "R. Cel. Fonseca, 34 - Trevo, Teixeira de Freitas - BA", telefone: "(73) 3292-4569", email: "bpm13.cmd@pm.ba.gov.br", setor: "Ensino", icone: "fa-graduation-cap" },
+            { nome: "21º BEIC/NELT – SALVADOR", tipo: "Batalhão de Ensino", comandante: "TEN CEL PM ANDRÉ LUÍS NAVEGANTES ARANHA", endereco: "Vila Policial Militar do Bonfim, Travessa Augusto de Mendonça, s/nº - Bonfim", telefone: "(71) 99968-6781", email: "cfap.nelt@pm.ba.gov.br", setor: "Ensino", icone: "fa-graduation-cap" },
+            { nome: "APM – ACADEMIA DE POLÍCIA MILITAR", tipo: "Ensino Superior", comandante: "Diretor CEL PM WOLNEY ANDERSON SANTOS DE ALMEIDA", endereco: "Tv. Augusto de Mendonça - Boa Viagem, Salvador - BA", telefone: "(71) 99640-3710", email: "wolneypqd@gmail.com", setor: "Ensino", icone: "fa-building-columns" },
+
+            { nome: "CPM – DENDEZEIROS", tipo: "Colégio", comandante: "Diretor TEN CEL PM CÉSAR AUGUSTO SANTIAGO PIEDADE", endereco: "Av. Dendezeiros do Bonfim, 86 - Bonfim, Salvador - BA", telefone: "(71) 3116-6248", email: "Não informado", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM – LOBATO", tipo: "Colégio", comandante: "Diretor TEN CEL PM HAMILTON FERREIRA DOS SANTOS", endereco: "R. Península do Joanes, s/n - Lobato, Salvador - BA", telefone: "(71) 3117-2567", email: "cpm.lobato.dir@pm.ba.gov.br", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM LUIZ TARQUINIO", tipo: "Colégio", comandante: "Diretor TEN CEL PM PATRÍCIA BARBOSA DA SILVA", endereco: "Rua Polidoro Bittencourt, s/nº, Boa Viagem, Salvador", telefone: "(71) 3312-2472", email: "patricia.silva7@pm.ba.gov.br", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM – RIBEIRA", tipo: "Colégio", comandante: "Diretor TEN CEL PM SERGIO MARCOS RIBEIRO PAZ", endereco: "Av. Beira Mar, 481 - Ribeira, Salvador - BA", telefone: "(71) 3316-7937", email: "ribeiro.paz@pm.ba.gov.br", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM – CAJAZEIRAS", tipo: "Colégio", comandante: "Diretor TEN CEL PM CLAUDIO MÁRCIO FERREIRA GUANAES MINEIRO", endereco: "R. A- Jaguaripe I, S/n - Fazenda Grande 2, Salvador - BA", telefone: "(71) 3305-6627", email: "cpm.cajazeiras.dir@pm.ba.gov.br", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM – CANDEIAS", tipo: "Colégio", comandante: "Diretor TEN CEL PM WELLINGTON MORAIS DOS SANTOS", endereco: "R. Guanabara, s/n - Candeias, BA", telefone: "(71) 3605-5484", email: "cpm.candeias.sec@pm.ba.gov.br", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM – FEIRA DE SANTANA", tipo: "Colégio", comandante: "Diretor TEN CEL PM ANDRÉ LUÍS CAVALCANTE VIEIRA", endereco: "R. Monsenhor Moisés Gonçalves do Couto, 2225 - Campo Limpo, Feira de Santana", telefone: "(75) 99931-3480", email: "cpm.feiradesantana.dir@pm.ba.gov.br", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM – ALAGOINHAS", tipo: "Colégio", comandante: "Diretor TEN CEL PM MAURÍCIO SODRÉ SANT’ANNA", endereco: "Rua Professor Arthur Pereira de Azevedo, s/n, Silva Alagoinhas", telefone: "(75) 3422-5607", email: "cpm.alagoinhas.dir@pm.ba.gov.br", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM – ITABUNA", tipo: "Colégio", comandante: "Diretor TEN CEL PM JOSE LUIS VENTURA MESQUITA JUNIOR", endereco: "AVENIDA MANOEL CHAVES, Nº 1.536, JARDIM PRIMAVERA", telefone: "(73) 3214-7343", email: "josemesquita@pm.ba.gov.br", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM – VITÓRIA DA CONQUISTA", tipo: "Colégio", comandante: "Diretor TEN CEL PM LEILA SOUZA GONÇALVES SILVA", endereco: "Zona Urbana, R. Brasília, 273 - Kadija, Vitória da Conquista", telefone: "(77) 3424-6062", email: "leila.souza@pm.ba.gov.br", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM- JEQUIÉ", tipo: "Colégio", comandante: "Diretor TEN CEL PM CARLOS FERNANDO LEITE TEIXEIRA JÚNIOR", endereco: "Avenida Humberto Alencar, Av. Cesar Borges, Jequié - BA", telefone: "(73) 3525-5765", email: "carlos.teixeira@pm.ba.gov.br", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM – JUAZEIRO", tipo: "Colégio", comandante: "Diretor TEN CEL PM JOSE NON OLIVEIRA DE SOUZA", endereco: "Rua dos Pinheiros, s/n, Jardim Universitário", telefone: "(74) 3611-6828", email: "jose.non@pm.ba.gov.br", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM – TEIXEIRA DE FREITAS", tipo: "Colégio", comandante: "Diretor TEN CEL PM ALEXANDRE COSTA DE SOUZA", endereco: "Monte Castelo, Teixeira de Freitas - BA", telefone: "(73) 3292-6303", email: "alexandre.costa@pm.ba.gov.br", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM – BOM JESUS DA LAPA", tipo: "Colégio", comandante: "Diretor TEN CEL PM CESAR ELPIDIO DO SACRAMENTO ALMEIDA", endereco: "Av. Santa Catarina, 789 - Bom Jesus da Lapa, BA", telefone: "(77) 99196-6293", email: "Não informado", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM – BARREIRAS", tipo: "Colégio", comandante: "Diretor TEN CEL PM DEMÓCRITO PINTO DOS REIS", endereco: "Rua Coronel Magno, n.º 533, Centro, Barreiras", telefone: "(77) 3612-8343", email: "Não informado", setor: "Ensino", icone: "fa-school" },
+            { nome: "CPM – ILHÉUS", tipo: "Colégio", comandante: "Diretor TEN CEL PM HOSANNAH SANTOS ROCHA", endereco: "R. Brg. Eduardo Gomes - Pontal, Ilhéus - BA", telefone: "(73) 99926-2920", email: "Não informado", setor: "Ensino", icone: "fa-school" },
+            { nome: "CRECHE DA POLÍCIA MILITAR", tipo: "Ensino", comandante: "Diretora VALÉRIA LUCAS MENEZES", endereco: "Boa Viagem, Salvador - BA, 40301-155", telefone: "(71) 3611-6532", email: "Não informado", setor: "Ensino", icone: "fa-children" }
+        ];
+
+        // Elementos do DOM
+        const searchInput = document.getElementById('searchInput');
+        const contactsGrid = document.getElementById('contactsGrid');
+        const noResults = document.getElementById('noResults');
+        const resultCount = document.getElementById('resultCount');
+
+        function renderContacts(contacts) {
+            contactsGrid.innerHTML = '';
+            
+            if (contacts.length === 0) {
+                contactsGrid.classList.add('hidden');
+                noResults.classList.remove('hidden');
+            } else {
+                contactsGrid.classList.remove('hidden');
+                noResults.classList.add('hidden');
+                
+                contacts.forEach(contact => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col h-full';
+                    
+                    // Determina a cor da tag superior com base no tipo
+                    let tagColor = 'bg-pmba-blue';
+                    if (contact.tipo.includes('Comando') && !contact.tipo.includes('Especializado')) tagColor = 'bg-pmba-navy';
+                    if (contact.tipo.includes('Especializad') || contact.tipo.includes('CIPE') || contact.tipo.includes('BOPE') || contact.tipo.includes('Choque') || contact.tipo.includes('Tático') || contact.tipo.includes('Aéreo')) tagColor = 'bg-gray-800';
+                    if (contact.tipo.includes('Departamento') || contact.tipo.includes('Órgão') || contact.tipo.includes('Assistência')) tagColor = 'bg-teal-700';
+                    if (contact.tipo.includes('Ensino') || contact.tipo.includes('Colégio')) tagColor = 'bg-amber-600';
+                    if (contact.tipo.includes('Esquadrão')) tagColor = 'bg-indigo-600';
+
+                    card.innerHTML = `
+                        <!-- Faixa colorida no topo indicando o tipo -->
+                        <div class="${tagColor} px-4 py-2 flex justify-between items-center text-white">
+                            <span class="text-xs font-bold uppercase tracking-wider">${contact.tipo}</span>
+                            <i class="fa-solid ${contact.icone} text-pmba-gold"></i>
+                        </div>
+                        
+                        <!-- Corpo do card -->
+                        <div class="p-5 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold text-gray-900 mb-1 leading-tight">${contact.nome}</h3>
+                            
+                            <div class="text-sm text-pmba-blue font-semibold mb-4 flex items-center">
+                                <i class="fa-solid fa-user-shield mr-2"></i> ${contact.comandante}
+                            </div>
+                            
+                            <div class="space-y-3 mt-auto text-sm text-gray-600">
+                                <div class="flex items-start">
+                                    <i class="fa-solid fa-building text-gray-400 mt-1 mr-3 w-4 text-center"></i>
+                                    <div>
+                                        <span class="block text-xs font-medium text-gray-400 uppercase">Setor</span>
+                                        <span class="font-medium text-gray-700">${contact.setor}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start">
+                                    <i class="fa-solid fa-phone text-gray-400 mt-1 mr-3 w-4 text-center"></i>
+                                    <div>
+                                        <span class="block text-xs font-medium text-gray-400 uppercase">Telefone</span>
+                                        <a href="tel:${contact.telefone.replace(/\D/g,'')}" class="font-medium text-pmba-blue hover:underline">${contact.telefone}</a>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start">
+                                    <i class="fa-solid fa-envelope text-gray-400 mt-1 mr-3 w-4 text-center"></i>
+                                    <div class="truncate">
+                                        <span class="block text-xs font-medium text-gray-400 uppercase">E-mail</span>
+                                        <a href="mailto:${contact.email}" class="font-medium text-pmba-blue hover:underline truncate block" title="${contact.email}">${contact.email}</a>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start pt-2 border-t border-gray-100">
+                                    <i class="fa-solid fa-location-dot text-gray-400 mt-1 mr-3 w-4 text-center"></i>
+                                    <span class="text-xs text-gray-500">${contact.endereco}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Botão de ação na base -->
+                        <div class="bg-gray-50 px-5 py-3 border-t border-gray-200">
+                            <button onclick="copyToClipboard('${contact.telefone}')" class="w-full text-center text-sm font-medium text-pmba-navy hover:text-pmba-blue transition-colors flex items-center justify-center">
+                                <i class="fa-regular fa-copy mr-2"></i> Copiar Telefone
+                            </button>
+                        </div>
+                    `;
+                    contactsGrid.appendChild(card);
+                });
+            }
+            
+            // Atualiza o contador
+            resultCount.textContent = `${contacts.length} resultado${contacts.length !== 1 ? 's' : ''}`;
+        }
+
+        // Função de filtro genérica
+        function filterContacts(query) {
+            const normalizedQuery = query.toLowerCase().trim();
+            
+            if (normalizedQuery === '') {
+                renderContacts(contactsData);
+                return;
+            }
+
+            const filteredData = contactsData.filter(contact => {
+                // Função segura para remover acentos
+                const normalizeStr = (str) => {
+                    if (!str) return "";
+                    return String(str).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+                };
+                
+                const q = normalizeStr(normalizedQuery);
+                const qNumbers = normalizedQuery.replace(/\D/g, ''); // Extrai apenas os números da busca
+                
+                // Compara as propriedades de texto
+                const matchNome = normalizeStr(contact.nome).includes(q);
+                const matchTipo = normalizeStr(contact.tipo).includes(q);
+                const matchCmdt = normalizeStr(contact.comandante).includes(q);
+                const matchSetor = normalizeStr(contact.setor).includes(q);
+                
+                // Só pesquisa por telefone se a busca contiver algum número (Evita o bug de retornar tudo)
+                let matchTel = false;
+                if (qNumbers !== '' && contact.telefone) {
+                    matchTel = String(contact.telefone).replace(/\D/g, '').includes(qNumbers);
+                }
+                
+                // Retorna verdadeiro se alguma das condições bater
+                return matchNome || matchTipo || matchCmdt || matchSetor || matchTel;
+            });
+
+            renderContacts(filteredData);
+        }
+
+        // Funções para os botões de filtro rápido
+        function filterByType(type) {
+            searchInput.value = type;
+            filterContacts(type);
+        }
+
+        function resetFilters() {
+            searchInput.value = '';
+            renderContacts(contactsData);
+        }
+
+        // Função utilitária para copiar telefone (substitui o alert visualmente)
+        function copyToClipboard(text) {
+            // Cria um elemento input temporário para copiar
+            const tempInput = document.createElement("input");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            
+            // Feedback visual customizado
+            showNotification(`Telefone ${text} copiado!`);
+        }
+
+        // Sistema simples de notificação para substituir alert()
+        function showNotification(message) {
+            // Verifica se já existe uma, remove
+            const existingNotif = document.getElementById('custom-notification');
+            if(existingNotif) existingNotif.remove();
+
+            const notification = document.createElement('div');
+            notification.id = 'custom-notification';
+            notification.className = 'fixed bottom-4 right-4 bg-pmba-navy text-white px-6 py-3 rounded-lg shadow-2xl flex items-center z-50 transform transition-all duration-300 translate-y-10 opacity-0';
+            notification.innerHTML = `<i class="fa-solid fa-check-circle text-green-400 mr-3"></i> ${message}`;
+            
+            document.body.appendChild(notification);
+            
+            // Animação de entrada
+            setTimeout(() => {
+                notification.classList.remove('translate-y-10', 'opacity-0');
+            }, 10);
+
+            // Remove após 3 segundos
+            setTimeout(() => {
+                notification.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Listeners
+        searchInput.addEventListener('input', (e) => {
+            filterContacts(e.target.value);
+        });
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            renderContacts(contactsData);
+            
+            // Foca no input ao carregar a página se não for dispositivo móvel (para evitar teclado virtual imediato)
+            if (window.innerWidth > 768) {
+                searchInput.focus();
+            }
+        });
+
+    </script>
+</body>
+</html>
